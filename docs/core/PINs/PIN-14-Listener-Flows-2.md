@@ -11,16 +11,18 @@ Author: Chris White
 
 ## Status
 
-**Paused**; supersedes [PIN 8](PIN-08-Listener-Flows.html).
+**Paused**; supersedes [PIN 8](/core/PINs/PIN-08-Listener-Flows/).
 
 ## Context
 
 Many use cases require event-driven Flows; for example, we might want to run an ETL-style Flow to process individual files each time one lands in an S3 bucket.  Historically, we have recommended users sign up for a Scheduler account and use Prefect Cloud's API to trigger parametrized runs (e.g., [using AWS Lambda](https://medium.com/the-prefect-blog/event-driven-workflows-with-aws-lambda-2ef9d8cc8f1a)).  This suffers from a few drawbacks:
+
 - it doesn't allow users to explicitly specify that this Flow depends on an external event
 - it doesn't allow users to configure that event as a first-class hook within Prefect
 - it requires the Flow be run through Prefect Cloud
 
 This PIN outlines a first-class implementation of event-driven workflows that will allow users to configure an `EventClock` that listens for events of a specified type, and passes a JSON representation of each event as a Parmeter to the Flow.  This will allow for:
+
 - a maintained library of event-driven hooks
 - the ability to configure event-driven flows which also run on a schedule
 - an implementation that allows both Core and Cloud users to run event-driven Flows
@@ -28,11 +30,12 @@ This PIN outlines a first-class implementation of event-driven workflows that wi
 
 ## Proposal
 
-The heart of the current proposal is to introduce a new `EventClock` (see [PIN 10](PIN-10-Schedules.html) for a description of the clock model) which polls to find events matching its specification.  The proposal is similar in spirit to [PIN 8](PIN-08-Listener-Flows), with a somewhat simpler implementation now that Clocks have been implemented.  In addition to a new type of Clock, this proposal outlines a new `listen()` method on `FlowRunner` classes, which will become responsible for waiting for either a scheduled time or an event to take place, and will ultimately replace a large piece of the scheduling logic within `flow.run()`.
+The heart of the current proposal is to introduce a new `EventClock` (see [PIN 10](/core/PINs/PIN-10-Schedules/) for a description of the clock model) which polls to find events matching its specification.  The proposal is similar in spirit to [PIN 8](/core/PINs/PIN-08-Listener-Flows/), with a somewhat simpler implementation now that Clocks have been implemented.  In addition to a new type of Clock, this proposal outlines a new `listen()` method on `FlowRunner` classes, which will become responsible for waiting for either a scheduled time or an event to take place, and will ultimately replace a large piece of the scheduling logic within `flow.run()`.
 
 ### Core
 
 In Core, we introduce two new APIs:
+
 - an `EventClock` which has an unimplemented `next` method, responsible for polling for events and collecting them in a work queue
 - an `EventParameter` (or a new keyword argument to `Parameter`s) that allows users to designate a Parameter as the JSON event payload, with a default value of either `None` or `dict()`
 

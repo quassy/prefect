@@ -2,7 +2,7 @@
 
 Prefect includes a number of examples covering different features. Some are 
 covered in the tutorials, and all can be accessed from the GitHub repo
-[here](https://github.com/PrefectHQ/prefect/tree/master/examples).
+[here](https://github.com/PrefectHQ/prefect/tree/1.x/examples).
 
 ## Running examples with Prefect Cloud or Server
 
@@ -37,4 +37,4 @@ $ prefect agent local start -l prefect-examples
 ```
 
 If you haven't already, we recommend going through the Getting Started 
-[Orchestration Layer](/orchestration/getting-started/set-up.html) topics beforehand.
+[Orchestration Layer](/orchestration/getting-started/set-up/) topics beforehand.

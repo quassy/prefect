@@ -11,7 +11,7 @@ Author: Jeremiah Lowin
 
 ## Status
 
-Superseded by [PIN 14](PIN-14-Listener-Flows-2.html).
+Superseded by [PIN 14](/core/PINs/PIN-14-Listener-Flows-2/).
 
 ## Context
 

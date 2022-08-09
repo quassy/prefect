@@ -112,6 +112,29 @@ nav:
             - core/advanced_tutorials/task-looping.md
             - core/advanced_tutorials/using-results.md
             - core/advanced_tutorials/visualization.md
+        - Examples:
+            - core/examples/overview.md
+            - core/examples/parameters.md
+            - core/examples/conditional.md
+            - core/examples/mapping.md
+        - PINs:
+            - Contents: core/PINs/README.md
+            - core/PINs/PIN-01-Introduce-PINs.md
+            - core/PINs/PIN-02-Result-Handlers.md
+            - core/PINs/PIN-03-Agent-Environment.md
+            - core/PINs/PIN-04-Result-Objects.md
+            - core/PINs/PIN-05-Combining-Tasks.md
+            - core/PINs/PIN-06-Remove-Constant-Tasks.md
+            - core/PINs/PIN-07-Storage-Execution.md
+            - core/PINs/PIN-08-Listener-Flows.md
+            - core/PINs/PIN-09-CLI.md
+            - core/PINs/PIN-10-Schedules.md
+            - core/PINs/PIN-11-Task-Loops.md
+            - core/PINs/PIN-12-Environment-Callbacks.md
+            - core/PINs/PIN-13-Universal-Deploy.md
+            - core/PINs/PIN-14-Listener-Flows-2.md
+            - core/PINs/PIN-15-Skip-as-Finished-and-Conditionals.md
+            - core/PINs/PIN-16-Results-and-Targets.md
     - Orchestration: orchestration/README.md
     - Task Library:
         - Overview: core/task_library/overview.md

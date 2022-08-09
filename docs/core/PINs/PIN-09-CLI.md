@@ -25,6 +25,7 @@ All of the groups and commands do not need to be built out on first pass and ins
 ### Help Texts
 
 Mock of the main help text when running `prefect` from the command line:
+
 ```
 $ prefect
 Usage: prefect [OPTIONS] COMMAND [ARGS]...
@@ -55,6 +56,7 @@ Options:
 ```
 
 Mock of a group's commands (from `prefect get`):
+
 ```
 $ prefect get --help
 Usage: prefect get [OPTIONS] COMMAND [ARGS]...
