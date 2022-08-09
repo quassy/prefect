@@ -2,6 +2,7 @@
 # More Resources
 
 The Core Quick Start guide has covered: 
+
 - Installing prefect
 - Running a flow
 
@@ -26,7 +27,7 @@ different aspects of developing and running flows. These examples can all be run
 locally or through Prefect Cloud/Server. To create a new project and register all
 examples, run the following:
 
-```
+```bash
 # Create a new "Prefect Examples" project
 $ prefect create project "Prefect Examples"
 

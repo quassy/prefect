@@ -4,18 +4,18 @@ sidebarDepth: 0
 
 # Adding Parameters
 
-!!! tip Follow along in the Terminal
+!!! tip "Follow along in the terminal"
 
-    ```
+    ```bash
     cd examples/tutorial
     python 03_parameterized_etl_flow.py
     ```
 
 
 
-In the [last tutorial](/core/tutorial/02-etl-flow.html) we refactored the Aircraft ETL script into a Prefect Flow. However, the `extract_live_data` Task has been hard coded to pull aircraft data only within a particular area, in this case a 200 KM radius surrounding Dulles International Airport:
+In the [last tutorial](/core/tutorial/02-etl-flow/) we refactored the Aircraft ETL script into a Prefect Flow. However, the `extract_live_data` Task has been hard coded to pull aircraft data only within a particular area, in this case a 200 KM radius surrounding Dulles International Airport:
 
-```python{4-5}
+```python
 @task
 def extract_live_data():
     # Get the live aircraft vector data around Dulles airport
@@ -33,7 +33,7 @@ It would be ideal to allow fetching data from a wide variety of areas, not just 
 
 Let's refactor our Python function to take a user-specified airport along with the reference data:
 
-```python{2, 4-10}
+```python
 @task
 def extract_live_data(airport, radius, ref_data):
     # Get the live aircraft vector data around the given airport (or none)
@@ -55,7 +55,7 @@ _(In case you're curious, `area=None` will fetch live data for all known aircraf
 
 How might we make use of these function parameters within a Prefect `Flow`? By using `prefect.Parameter`:
 
-```python{1,6,7,10}
+```python
 from prefect import Parameter
 
 # ...task definitions...
@@ -85,10 +85,9 @@ flow.run(airport="DCA")
 
 Lastly, take note that our execution graph has changed -- fetching live data now depends on obtaining the reference data:
 
-![Graph ETL](/prefect-tutorial-etl-parameterized-dataflow.png)
+![Graph ETL](/img/prefect-tutorial-etl-parameterized-dataflow.png)
 
-!!! warning Up Next!
-
-What happens when a task fails? And how can we customize actions taken when things go wrong?
+!!! warning "Up next!"
+    What happens when a task fails? And how can we customize actions taken when things go wrong?
 
 

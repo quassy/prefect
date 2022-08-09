@@ -4,7 +4,7 @@ sidebarDepth: 0
 
 # Thinking Prefectly
 
-This page will give you a gentle introduction to Prefect's core concepts. If you are keen to get started we have a [Getting Started guide](/core/getting_started/quick-start.html) and [ETL tutorial](/core/tutorial/01-etl-before-prefect.html) on building real-world data applications with Prefect.
+This page will give you a gentle introduction to Prefect's core concepts. If you are keen to get started we have a [Getting Started guide](/core/getting_started/quick-start/) and [ETL tutorial](/core/tutorial/01-etl-before-prefect/) on building real-world data applications with Prefect.
 
 Prefect is a tool for building **data workflows**. A workflow is a series of steps that are performed in a certain order.
 
@@ -46,7 +46,7 @@ def say_hello(person: str) -> None:
     print("Hello, {}!".format(person))
 ```
 
-!!! tip Type annotations
+!!! tip "Type annotations"
     Notice how we used Python 3 annotations to tell Prefect our input and output types. This is **completely optional**, but the system may be able to enhance your workflow if you provide typing information.
 
 
@@ -112,7 +112,7 @@ assert second_task_state.result == 103
 
 The flow's `run()` method is a convenience function that handles some of the most important aspects of workflow management: scheduling, retries, data serialization, and more. If the flow has a schedule attached, calling `flow.run()` will sleep until the next scheduled time, run the flow, and sleep again until the next run.
 
-!!! tip Deferred execution
+!!! tip "Deferred execution"
     When you build a flow in Prefect, you're defining a _computational graph_ that can be executed sometime in the future, possibly in a distributed environment. That's why most of this documentation follows a simple pattern: the flow is built (usually in a "`with Flow():`" context), and then the flow is `run()` as a second step. In production, you probably won't call `flow.run()` yourself, but rather let a management API handle execution.
 
 
@@ -168,7 +168,7 @@ This flow combines our addition tasks with the "say hello" task, using a state d
 
 It's possible to create state-dependencies with Prefect's functional API, as well. When calling a task as if it was a function, pass a list of tasks to a special `upstream_tasks` keyword argument; Prefect will automatically call `set_upstream()` on each one.
 
-!!! tip Mix-and-match
+!!! tip "Mix-and-match"
     You can switch between the functional API and the imperative API at any time. For example, half way through the previous code block, we could have called `with flow:` and entered a flow context in which the functional API was available. At a minimum, this would remove the need to pass `flow=flow` to each bind instruction. You can choose whichever style you prefer.
 
 ## Orchestrating flows
@@ -177,16 +177,16 @@ Prefect's Core Python API is a powerful tool to describe task dependencies and e
 
 Prefect Core ships with an open source, lightweight version of our highly-available, production-ready backend product Prefect Cloud.
 
-Let's take a very quick look into what a flow orchestrated with Prefect Core's server looks like; for more information, see the [documentation on Orchestration](/orchestration/README.md).
+Let's take a very quick look into what a flow orchestrated with Prefect Core's server looks like; for more information, see the [documentation on Orchestration](/orchestration/).
 
-After [starting and configuring Core's server](/orchestration/server/deploy-local.md), navigate to `http://localhost:8080` to see the Prefect UI:
+After [starting and configuring Core's server](/orchestration/server/deploy-local/), navigate to `http://localhost:8080` to see the Prefect UI:
 
 ![](/img/orchestration/server/new-server-dashboard.png)
 
 !!! warning Backend configuration
     Before registering your flow with your local backend make sure you have called `prefect backend server` from the CLI to configure Prefect for local orchestration.
 
-[Register](/orchestration/concepts/flows.md#registration) any of your flows; they will register with your local backend:
+[Register](/orchestration/concepts/flows/#registration) any of your flows; they will register with your local backend:
 
 ```python
 >>> flow.register()
@@ -196,13 +196,13 @@ You can use the URL returned from the `register()` call to navigate directly to 
 
 ![](/img/orchestration/server/first-flow-registered-server.png)
 
-Start a [local agent](/orchestration/agents/local.md) that can communicate between the server and your flow code.
+Start a [local agent](/orchestration/agents/local/) that can communicate between the server and your flow code.
 
 ```bash
 prefect agent local start
 ```
 
-And then trigger your flow from the UI using the ["Run" button](/orchestration/ui/flow.md#run)! You will see the agent pick up your work:
+And then trigger your flow from the UI using the ["Run" button](/orchestration/ui/flow/#run)! You will see the agent pick up your work:
 
 ```
 [2020-03-28 19:40:49,985] INFO - agent | Found 1 flow run(s) to submit for execution.

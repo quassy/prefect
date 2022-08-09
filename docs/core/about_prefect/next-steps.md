@@ -4,10 +4,10 @@ sidebarDepth: 0
 
 # Next Steps
 
-In the [introduction](thinking-prefectly.md), we took a look at creating tasks and combining them into flows. Prefect's functional and imperative APIs make that easy, but the result was a fairly vanilla data pipeline. In this section, we're going to explore how Prefect enables advanced mechanisms for overlaying complex business logic on your workflow.
+In the [introduction](/about_prefect/thinking-prefectly/), we took a look at creating tasks and combining them into flows. Prefect's functional and imperative APIs make that easy, but the result was a fairly vanilla data pipeline. In this section, we're going to explore how Prefect enables advanced mechanisms for overlaying complex business logic on your workflow.
 
 
-You can also check out our [full tutorial](/core/tutorial/01-etl-before-prefect.html) on building real-world data applications.
+You can also check out our [full tutorial](/core/tutorial/01-etl-before-prefect/) on building real-world data applications.
 
 
 ## Triggers
@@ -16,7 +16,7 @@ So far, we've dealt exclusively with tasks that obey "normal" data pipeline rule
 
 It is frequently desirable to build flows in which tasks respond to each other in more complicated ways. A simple example is a "clean up task" that must run, even (or only!) if a prior task failed. Suppose our first task creates a Spark cluster, the second task submits a job to that cluster, and a third task tears down the cluster. In a "normal" pipeline world, if the second task fails the third task won't run -- and that could result in our Spark cluster running forever!
 
-Prefect introduces a concept called [`triggers`](../concepts/execution.html#triggers) to solve this situation. Before a task runs, its trigger function is called on a set of upstream task states. If the trigger function doesn't pass, the task won't run. Prefect has a variety of built-in triggers, including `all_successful` (the default), `all_failed`, `any_successful`, `any_failed`, and even a particularly interesting one called `manual_only`.
+Prefect introduces a concept called [`triggers`](/concepts/execution/#triggers) to solve this situation. Before a task runs, its trigger function is called on a set of upstream task states. If the trigger function doesn't pass, the task won't run. Prefect has a variety of built-in triggers, including `all_successful` (the default), `all_failed`, `any_successful`, `any_failed`, and even a particularly interesting one called `manual_only`.
 
 Let's set up our Spark cluster flow, using obvious pseudocode where appropriate:
 
@@ -60,7 +60,7 @@ def tear_down_cluster(cluster):
 
 All other code remains the same. Now the `tear_down_cluster` task will *always* run, even -- or especially -- when the `submitted` task fails.
 
-!!! tip Tasks never run before upstream tasks finish
+!!! tip "Tasks never run before upstream tasks finish"
     Prefect will never run a task before its upstream tasks finish. This is why the `all_finished` and `always_run` triggers are synonymous.
 
 ## Reference Tasks
@@ -91,7 +91,7 @@ There are other, more interesting signals available. For example, raising a `RET
 
 Another useful signal is the `SKIP` signal. When a task is skipped, downstream tasks are also skipped unless they specifically set `skip_on_upstream_skip=False`. This means that users can set up entire workflow branches that can be skipped if a condition isn't met.
 
-!!! tip SKIP is treated like SUCCESS
+!!! tip "SKIP is treated like SUCCESS"
     When a task is skipped, it's usually treated as if it ran successfully. This is because tasks only skip if users specifically introduce skipping logic, so the result is compliant with the user's design.
 
 To raise a signal, simply use it inside your task's run() function:

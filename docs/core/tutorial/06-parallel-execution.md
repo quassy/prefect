@@ -3,7 +3,7 @@ sidebarDepth: 0
 ---
 # Scaling Out
 
-!!! tip Follow along in the Terminal
+!!! tip "Follow along in the terminal"
 
     ```
     cd examples/tutorial
@@ -14,7 +14,7 @@ sidebarDepth: 0
 
 Let's adjust our `Flow` to distribute its `Tasks` onto a [Dask](https://dask.org/) Cluster, parallelizing its execution. This may sound involved, but will actually be our simplest adjustment yet:
 
-```python{1,7}
+```python
 from prefect.executors import DaskExecutor
 
 # ...task definitions...
@@ -26,7 +26,7 @@ if __name__=="__main__":
 
 This will spin up a [Local Dask Cluster](https://docs.dask.org/en/latest/setup/single-distributed.html) on your system to parallelize the tasks. If you already have a Dask Cluster deployed elsewhere, you can leverage that cluster by specifying the address in the `DaskExecutor` constructor:
 
-```python{3}
+```python
 flow.run(
     executor=DaskExecutor(
         address='some-ip:port/to-your-dask-scheduler'

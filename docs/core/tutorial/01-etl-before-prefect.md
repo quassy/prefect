@@ -6,11 +6,11 @@ sidebarDepth: 0
 
 Before we even `import prefect`, let's begin by reviewing a typical real-life ETL workflow.
 
-!!! tip Follow along in the Terminal
+!!! tip "Follow along in the terminal"
 
     Grab the tutorial code:
 
-    ```
+    ```bash
     git clone --depth 1 https://github.com/PrefectHQ/prefect.git
     cd prefect/examples/tutorial
 
@@ -23,11 +23,9 @@ Before we even `import prefect`, let's begin by reviewing a typical real-life ET
 
     Run this example:
 
-    ```
+    ```bash
     python 01_etl.py
     ```
-
-
 
 ## "Aircraft ETL" Example
 
@@ -61,7 +59,7 @@ db.update_reference_data(ref_data)
 
 The advantages of the above code is that it is simple to read. However, its simplicity is matched only by the number of disadvantages. First and foremost, the workflow is strictly linear:
 
-![Linear ETL](/prefect-tutorial-etl-linear.png)
+![Linear ETL](/img/prefect-tutorial-etl-linear.png)
 
 This leads to missed compute opportunities:
 

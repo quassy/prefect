@@ -60,17 +60,25 @@ plugins:
             - src/prefect/
     search: {}
 nav:
-  - Prefect 1.0: index.md
-  - Core:
-    - Overview: core/README.md
-    - About Prefect:
-      - Why Prefect?: core/about_prefect/why-prefect.md
-      - Why not Airflow?: core/about_prefect/why-not-airflow.md
-      - Thinking Prefectly: core/about_prefect/thinking-prefectly.md
-      - Next Steps: core/about_prefect/next-steps.md
-    - Getting Started:
-      - core/getting_started/quick-start.md
-      - core/getting_started/install.md
-      - core/getting_started/basic-core-flow.md
-      - core/getting_started/more-resources.md
-  - Orchestration: orchestration/README.md
+    - Prefect 1.0: index.md
+    - Core:
+        - Overview: core/README.md
+        - About Prefect:
+            - Why Prefect?: core/about_prefect/why-prefect.md
+            - Why not Airflow?: core/about_prefect/why-not-airflow.md
+            - Thinking Prefectly: core/about_prefect/thinking-prefectly.md
+            - Next Steps: core/about_prefect/next-steps.md
+        - Getting Started:
+            - core/getting_started/quick-start.md
+            - core/getting_started/install.md
+            - core/getting_started/basic-core-flow.md
+            - core/getting_started/more-resources.md
+        - ETL Tutorial:
+            - core/tutorial/01-etl-before-prefect.md
+            - core/tutorial/02-etl-flow.md
+            - core/tutorial/03-parameterized-flow.md
+            - core/tutorial/04-handling-failure.md
+            - core/tutorial/05-running-on-a-schedule.md
+            - core/tutorial/06-parallel-execution.md
+            - core/tutorial/07-next-steps.md
+    - Orchestration: orchestration/README.md

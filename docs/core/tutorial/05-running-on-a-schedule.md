@@ -3,7 +3,7 @@ sidebarDepth: 0
 ---
 # Running on Schedule
 
-!!! tip Follow along in the Terminal
+!!! tip "Follow along in the terminal"
 
     ```
     cd examples/tutorial
@@ -14,7 +14,7 @@ sidebarDepth: 0
 
 Now that our Aircraft ETL flow is trustworthy enough, we want to be able to run it continuously on a schedule. Prefect provides `Schedule` objects that can be attached to `Flows`:
 
-```python{1,2,6,11}
+```python
 from datetime import timedelta, datetime
 from prefect.schedules import IntervalSchedule
 
@@ -40,8 +40,8 @@ with Flow("Aircraft-ETL", schedule=schedule) as flow:
 
 When invoking `flow.run()` our flow will never stop, always starting a new run every minute.
 
-!!! tip More on Schedules
-    There are several ways to configure schedules to meet a wide variety of needs. For more on Schedules [see our docs](/core/concepts/schedules.html#schedules).
+!!! tip "More on schedules"
+    There are several ways to configure schedules to meet a wide variety of needs. For more on Schedules [see our docs](/core/concepts/schedules/#schedules).
 
 
 

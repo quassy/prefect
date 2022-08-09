@@ -4,11 +4,11 @@ sidebarDepth: 0
 
 # ETL with Prefect
 
-In this tutorial, we'll use Prefect to improve the overall structure of the ETL workflow from the [previous tutorial](/core/tutorial/01-etl-before-prefect.html).
+In this tutorial, we'll use Prefect to improve the overall structure of the ETL workflow from the [previous tutorial](/core/tutorial/01-etl-before-prefect/).
 
-!!! tip Follow along in the Terminal
+!!! tip "Follow along in the terminal"
 
-    ```
+    ```bash
     cd examples/tutorial
     python 02_etl_flow.py
     ```
@@ -76,7 +76,7 @@ Now that we have appropriately sized functions and an idea of how these function
 
 **Decorate any function that Prefect should run with `prefect.task`:**
 
-```python{1-3,9,15,21,26}
+```python
 from prefect import task, Flow
 
 @task
@@ -127,7 +127,7 @@ with Flow("Aircraft-ETL") as flow:
 
 Note: **none of the tasks are actually executed at this time**, as the `with Flow(...):` context manager allows Prefect to reason about dependencies between tasks and build an execution graph that will be executed _later_. In this case, the execution graph would look like so:
 
-![Graph ETL](/prefect-tutorial-etl-dataflow.png)
+![Graph ETL](/img/prefect-tutorial-etl-dataflow.png)
 
 A huge improvement over our original implementation!
 
@@ -143,7 +143,7 @@ flow.run()
 
 At this point, the `Tasks` (our Python functions) are executed in the appropriate order, with data being passed from task-to-task as specified in the execution graph.
 
-!!! tip Prefect Task Library
+!!! tip "Prefect Task Library"
     Prefect provides a [Task Library](/core/task_library/overview.html) that includes common Task implementations and integrations with Kubernetes, GitHub, Slack, Docker, AWS, GCP, and more!
 
 

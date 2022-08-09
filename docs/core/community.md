@@ -11,6 +11,7 @@ Please consider [Chris White](https://github.com/cicdw) the main point of contac
 # Prefect Community Discourse
 
 [Prefect Discourse](https://discourse.prefect.io/) is a collaborative space to share knowledge, discuss ideas, find answers to common questions and get support. It's an online forum that allows you to easily find:
+
 - information about Prefect features,
 - information about Prefect integrations,
 - troubleshooting tips,
@@ -52,8 +53,9 @@ The Prefect community is here to support you. That said, it is significantly eas
 Informative Slack threads are archived by our resident bot Marvin. Having well-written threads helps future users encountering the same problem.
 
 Oftentimes your question may have been answered somewhere else; some good resources to start looking before asking a question:
+
 * [Previous Slack messages](https://github.com/PrefectHQ/prefect/issues?q=is%3Aopen+is%3Aissue+label%3A%22Prefect+Slack+Community%22) (we do our best to archive relevant threads to GitHub!)
-* [Prefect documentation](https://docs.prefect.io/core/development/documentation.html)
+* [Prefect documentation](/core/development/documentation/)
 * [Github issues](https://github.com/PrefectHQ/prefect/issues)
 * [StackOverflow](https://stackoverflow.com/questions/tagged/prefect)
 
