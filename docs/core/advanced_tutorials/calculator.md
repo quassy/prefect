@@ -44,14 +44,14 @@ assert run(flow, x=-100) == -99
 
 ## Adding two numbers
 
-Let's kick this up a notch -- why have one input when you could have two?
+Let's kick this up a notch &mdash; why have one input when you could have two?
 
 ```python
 with Flow('Add x and y') as flow:
     result = Parameter('x') + Parameter('y')
 ```
 
-!!! tip Multiple Parameters
+!!! tip "Multiple Parameters"
     A flow can have as many parameters as you want, as long as they have unique names.
 
 Our new calculator works like a charm:
@@ -81,7 +81,7 @@ with Flow('Arithmetic') as flow:
     result = merge(*operations.values())
 ```
 
-!!! tip Conditional Branches
+!!! tip "Conditional branches"
     Prefect has a few ways to run tasks conditionally, including the `switch` function used here and the simpler `ifelse`.
 
     In this case, the `switch` checks for the value of the `op` parameter, and then executes the task corresponding to the appropriate computation. A `merge` function is used to combine all the branches back in to a single result.
@@ -120,10 +120,10 @@ with Flow('Arithmetic') as flow:
     result = merge(*operations.values())
 ```
 
-!!! tip The @task decorator
+!!! tip "The @task decorator"
     The `@task` decorator is a simple way to turn any function into a task.
 
-!!! tip Indexing a task
+!!! tip "Indexing a task"
     Just as we've shown that tasks can be added (or subtracted, or multiplied, or divided), they can be indexed as well. Here, we index the result of the `inputs` task to get `x`, `y`, and `op`. Like every other Prefect operation, the indexing itself is recorded in the computational graph, but the execution is deferred until the flow is run and the indexed result is actually available.
 
 And now we can run our calculator on string expressions :tada::
@@ -141,4 +141,4 @@ For the curious and/or brave, here's a visualization of the computational graph 
 flow.visualize()
 ```
 
-![visualization of a computational graph](/calculator.png)
+![visualization of a computational graph](/img/calculator.png)

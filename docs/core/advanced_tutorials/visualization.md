@@ -30,7 +30,7 @@ f.visualize()
 !!! tip Python in tasks
     Prefect tasks support basic Python operations such as addition, subtraction, and comparisons.
 
-![underlying flow graph](/output_1_0.svg){.viz-xs .viz-padded}
+![underlying flow graph](/img/output_1_0.svg){.viz-xs .viz-padded}
 
 Here we see a nice static representation of the underlying flow graph: the nodes correspond to tasks (labeled with the task name) and the edges to dependencies (labeled with the underlying argument name if data is being passed). This can be helpful with understanding task dependencies, and possibly debugging your logic without having to execute your tasks.
 
@@ -56,20 +56,21 @@ with Flow("math") as f:
 f.visualize()
 ```
 
-![output switch condition fail](/output_5_0.svg){.viz-md .viz-padded}
+![output switch condition fail](/img/output_5_0.svg)
 
 From this visualization we can learn a lot about how Prefect is operating under the hood:
+
 - Constant inputs to Prefect tasks (e.g., `6` above) are not represented as tasks; instead they are stored on the flow object under the `constants` attribute; this attribute contains a dictionary relating tasks to which constant values they rely on
 - Some of Prefect's utility tasks (such as `switch` above) create multiple tasks under the hood; in this case `switch` created a new `CompareValue` task for each case we provided
 - Every type of operation on a task is itself represented by another task; above we can see that division resulted in a new `Div` task. This highlights a principle to remember when building your workflows: all runtime logic should be represented by a task
 - Some types of task dependencies rely on data (represented by labeled edges in the visualization) whereas others represent pure state dependencies (represented by unlabeled edges in the visualization)
 
-### Static Flow Visualization - Post Run
+### Static Flow visualization post run
 
 In addition to viewing the structure of our DAG, Prefect allows you to easily visualize the post-run states of your tasks as well. Using our flow from above, suppose we were curious about how states would propagate if we set `x=1` and `y=2` (a condition not handled by the `switch`). In this case, we can first execute the flow, and then provide all the task states to the `flow.visualize` method to see how the states propagated!
 
-!!! tip State colors
-    The colors of all states, along with their inheritance relationships can be found in [the API reference for states](/api/latest/engine/state.html).
+!!! tip "State colors"
+    The colors of all states, along with their inheritance relationships can be found in [the API reference for states](/api-ref/latest/engine/state/).
 
 
 ```python
@@ -77,10 +78,10 @@ flow_state = f.run(x=1, y=2)
 f.visualize(flow_state=flow_state)
 ```
 
-![flow with colored post-run task states](/flow_visualize_colors.svg){.viz-md .viz-padded}
+![flow with colored post-run task states](/img/flow_visualize_colors.svg){.viz-md .viz-padded}
 
 We can see that both branches of the `switch` were skipped in this case.
 
-!!! tip Live Updating Visualizations
-    All of the visualizations are static visualizations that can only be inspected before or after a run is complete.  For live updating views, check out Schematics in the [Prefect Cloud UI](../../orchestration/ui/flow-run.html#schematic).
+!!! tip "Live updating visualizations"
+    All of the visualizations are static visualizations that can only be inspected before or after a run is complete.  For live updating views, check out Schematics in the [Prefect Cloud UI](/orchestration/ui/flow-run/#schematic).
 

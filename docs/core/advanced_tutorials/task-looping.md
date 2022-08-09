@@ -5,7 +5,7 @@ sidebarDepth: 0
 
 Prefect's rich state system allows for unique forms of workflow dynamicism that alter the underlying DAG structure at runtime, while still providing all of the underlying workflow guarantees: individual tasks can have custom retry settings, exchange data, activate notifications, etc.
 
-Previously, [task mapping](https://docs.prefect.io/core/concepts/mapping.html) allowed users to elevate parallelizable for-loops into first class parallel pipelines at runtime. Task looping offers much the same benefit, but for situations that require a while-loop pattern.
+Previously, [task mapping](/core/concepts/mapping/) allowed users to elevate parallelizable for-loops into first class parallel pipelines at runtime. Task looping offers much the same benefit, but for situations that require a while-loop pattern.
 
 ## An example: large Fibonacci numbers
 
@@ -40,7 +40,7 @@ Suppose our internet connection goes bad for a short instant and this task fails
 
 The goal is to elevate each individual iteration of the above while loop to its own Prefect Task, which can be retried and handled on its own. A priori we don't know how many iterations will be required. Lucky for us, Prefect supports such _dynamic_ patterns in a first-class way.
 
-There are two pieces of information that need to be conveyed from one iteration to the next: the loop count, as well as the loop payload (which can accumulate or change across iterations). To communicate this information, we will use the Prefect [`LOOP` signal](https://docs.prefect.io/api/latest/engine/signals.html#loop) as follows:
+There are two pieces of information that need to be conveyed from one iteration to the next: the loop count, as well as the loop payload (which can accumulate or change across iterations). To communicate this information, we will use the Prefect [`LOOP` signal](/api-ref/latest/engine/signals/#loop) as follows:
 
 ```python
 import requests
@@ -83,7 +83,7 @@ with Flow("fibonacci") as flow:
     fib_num = compute_large_fibonacci(M)
 ```
 
-As a matter of best practice, we opted to elevate `M` to a [Prefect Parameter](https://docs.prefect.io/core/concepts/parameters.html) instead of hardcoding its value.  This way we can experiment with small values and eventually increase the value without recompiling our Flow.
+As a matter of best practice, we opted to elevate `M` to a [Prefect Parameter](/core/concepts/parameters/) instead of hardcoding its value.  This way we can experiment with small values and eventually increase the value without recompiling our Flow.
 
 With our Flow built, let's compute the largest Fibonacci number less than 100 and then 1000!
 
@@ -99,7 +99,7 @@ If you run this Flow locally, you will see a large number of logs corresponding 
 
 ## Taking it one step further
 
-Looping in Prefect is a first-class operation - as such, it can be combined with mapping for a truly dynamic workflow!
+Looping in Prefect is a first-class operation. As such, it can be combined with mapping for a truly dynamic workflow!
 
 ```python
 with Flow("mapped-fibonacci") as mapped_flow:
@@ -107,7 +107,7 @@ with Flow("mapped-fibonacci") as mapped_flow:
     fib_nums = compute_large_fibonacci.map(ms)
 ```
 
-To be clear - our Flow as written _appears_ to have only two tasks, and has no idea how many values of `M` we might provide nor how many iterations might be needed for each `M`!
+To be clear, our Flow as written _appears_ to have only two tasks, and has no idea how many values of `M` we might provide nor how many iterations might be needed for each `M`!
 
 ```python
 flow_state = mapped_flow.run(ms=[10, 100, 1000, 1500])

@@ -4,11 +4,9 @@ sidebarDepth: 0
 
 # Using Results
 
-Let's take a look at using results to persist and track task output. As introduced in the concept documentation for ["Results"](../concepts/results.md), Prefect tasks associate their return value with a `Result` object attached to a task's `State`. If you configure the `Result` object for a task and enable checkpointing, the pipeline will also persist results to storage as a pickle into one of the supported storage backends.
+Let's take a look at using results to persist and track task output. As introduced in the concept documentation for ["Results"](/core/concepts/results/), Prefect tasks associate their return value with a `Result` object attached to a task's `State`. If you configure the `Result` object for a task and enable checkpointing, the pipeline will also persist results to storage as a pickle into one of the supported storage backends.
 
 Why would you persist the output of your tasks? The most common situation is to enable retrying from failure of a task for users that use a state database, such as Prefect Core's server or Prefect Cloud. By persisting the output of a task somewhere besides in-memory, a state database that knows the persisted location of a task's output can restart from where it left off. In the same vein, using a persistent cache to prevent reruns of expensive or slow tasks outside of a single Python interpreter is only possible when the return value of tasks are persisted somewhere outside of memory. Another common situation is to allow for inspection of intermediary data when debugging flows (including—maybe especially—production ones). By checkpointing data during different data transformation Tasks, runtime data bugs can be tracked down by analyzing the checkpoints sequentially.
-
-[[toc]]
 
 ## Setting up to handle results
 
@@ -16,7 +14,7 @@ Checkpointing must be enabled for the pipeline to write a result. You must enabl
 
 For Core-only users, you must:
 
-- Opt-in to checkpointing globally by setting the `prefect.config.flows.checkpointing` to "True" via [your preferred Prefect configuration](https://docs.prefect.io/core/concepts/configuration.html)
+- Opt-in to checkpointing globally by setting the `prefect.config.flows.checkpointing` to "True" via [your preferred Prefect configuration](/core/concepts/configuration/)
 - Specify the result your tasks will use for at least one level of specificity (flow-level or task-level)
 
 For Prefect Core server or Prefect Cloud users:
@@ -73,7 +71,7 @@ with Flow("my handled flow!"):
 
 ## Choosing your result subclass
 
-In the above examples, we only used the `LocalResult` class. This is one of several result subclasses that integrate with different storage backends; the full list is in the API docs for [prefect.engine.results](../../api/latest/engine/results.html) and more details on this interface is described in the concept ["Results"](../concepts/results.md) documentation.
+In the above examples, we only used the `LocalResult` class. This is one of several result subclasses that integrate with different storage backends; the full list is in the API docs for [prefect.engine.results](/api-ref/latest/engine/results/) and more details on this interface is described in the concept ["Results"](/core/concepts/results/) documentation.
 
 We can write our own result subclasses as long as they extend the [`Result`](https://github.com/PrefectHQ/prefect/blob/master/src/prefect/engine/result/base.py) interface, or we can pick an existing implementation from Prefect Core that utilizes a storage backend we like; for example, I will use `prefect.engine.results.GCSResult` so that my data will be persisted in Google Cloud Storage.
 
@@ -118,7 +116,7 @@ gs://prefect_results/2020/2/24/a07dd6c1-837d-4925-be46-3b525be57779.prefect_resu
 
 If you are using Prefect Cloud, you can see that this metadata from the "safe value" is also stored and exposed in the UI:
 
-![Task Detail with GCS Result.safe_value showing](/result-stored-in-cloud-UI-gcshandler.png)
+![Task Detail with GCS Result.safe_value showing](/img/result-stored-in-cloud-UI-gcshandler.png)
 
 ## Providing a task's location directly
 
@@ -221,7 +219,7 @@ Now when I run my flow, the `PrefectResult.location` contains the actual return 
 
 And this value `3` is also visible to Cloud users in the UI when inspecting the Task Run details:
 
-![Task Detail with JSON Result.safe_value showing](/result-stored-in-cloud-UI-jsonhandler.png)
+![Task Detail with JSON Result.safe_value showing](/img/result-stored-in-cloud-UI-jsonhandler.png)
 
 This is a useful backend for data that is small and safe to store in the database, as it requires no extra configuration.
 

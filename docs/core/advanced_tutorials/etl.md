@@ -44,7 +44,7 @@ def load(data):
 
 Now that we have our tasks, we create a `Flow` and call the tasks as if they were functions. In the background, Prefect is generating a computational graph that tracks all dependencies between our tasks.
 
-!!! tip Deferred execution
+!!! tip "Deferred execution"
     It may look like we're calling our ETL functions, but nothing is actually being executed here. In Prefect, calling a task is a convenient way to tell the framework how it relates to other tasks; Prefect uses that information to build the computational graph. Nothing actually happens until you call `flow.run()`.
 
 ```python
@@ -60,7 +60,7 @@ flow.run() # prints "Here's your data: [10, 20, 30]"
 
 If we call `flow.visualize()`, Prefect will draw the computational graph:
 
-![etl flow graph](/etl.png){.viz-sm}
+![etl flow graph](/img/etl.png){.viz-sm}
 
 ## An Imperative Flow
 
@@ -78,5 +78,5 @@ flow.set_dependencies(load, keyword_tasks=dict(data=transform))
 flow.run() # prints "Here's your data: [10, 20, 30]"
 ```
 
-!!! tip Mix-and-match
+!!! tip "Mix-and-match"
     Prefect's functional API and imperative API can be utilized at any time, even for a single line in a script that uses the other style for everything else. One of the only key differences is that the functional API requires code to be run in an active `Flow` context.

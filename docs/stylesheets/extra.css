@@ -51,7 +51,7 @@
 img {
     margin-top: 1rem;
     margin-bottom: 1rem;
-    filter: drop-shadow(0.2rem 0.2rem 0.3rem rgba(0,0,0,0.2))
+    /* filter: drop-shadow(0.2rem 0.2rem 0.3rem rgba(0,0,0,0.2)) */
 }
 
 /* remove margin just for the top nav logo */

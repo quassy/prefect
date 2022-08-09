@@ -85,14 +85,14 @@ For more examples of how the other tasks in the task library look check out the 
 containing all of the [task library code](https://github.com/PrefectHQ/prefect/tree/master/src/prefect/tasks).
 
 For more information on contributing to the Prefect library as whole check out the
-[development documentation](/core/development/overview.html).
+[development documentation](/core/development/overview/).
 
 ### Secrets and Authentication
 
 It is common for tasks in the task library to require some sort of authentication when interacting with
 services. Prefect has a desired implementation when it comes to using credentials in a task and that is
-through the use of a [Secret task](/api/latest/tasks/secrets.html). A `PrefectSecret` is a special type
-of task for interacting with Prefect [secrets](/core/concepts/secrets.html) that securely represents
+through the use of a [Secret task](/api-ref/latest/tasks/secrets/). A `PrefectSecret` is a special type
+of task for interacting with Prefect [secrets](/core/concepts/secrets/) that securely represents
 the retrieval of sensitive data.
 
 Secret tasks are only able to retrieve secret data during runtime therefore it is required that your
@@ -139,7 +139,7 @@ out the [tasks testing directory](https://github.com/PrefectHQ/prefect/tree/mast
 ## Documentation
 
 Tasks in the task library follow Prefect's standard documentation practices as outlined in the development
-[page on Documentation](/core/development/documentation.html). This means that kwargs in the task's
+[page on Documentation](/core/development/documentation/). This means that kwargs in the task's
 `__init__` and `run` function must be documented in the docstring. Check out any of the other
 [tasks in the task library](https://github.com/PrefectHQ/prefect/tree/master/src/prefect/tasks) as a
 point of reference!

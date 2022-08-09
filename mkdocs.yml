@@ -99,4 +99,20 @@ nav:
             - core/concepts/configuration.md
             - core/concepts/best-practices.md
             - core/concepts/common-pitfalls.md
+        - Advanced Tutorials:
+            - Contents: core/advanced_tutorials/README.md
+            - core/advanced_tutorials/advanced-mapping.md
+            - core/advanced_tutorials/calculator.md
+            - core/advanced_tutorials/custom-logs.md
+            - core/advanced_tutorials/dask-cluster.md
+            - core/advanced_tutorials/etl.md
+            - core/advanced_tutorials/local-debugging.md
+            - core/advanced_tutorials/slack-notifications.md
+            - core/advanced_tutorials/task-guide.md
+            - core/advanced_tutorials/task-looping.md
+            - core/advanced_tutorials/using-results.md
+            - core/advanced_tutorials/visualization.md
     - Orchestration: orchestration/README.md
+    - Task Library:
+        - Overview: core/task_library/overview.md
+        - Contributing: core/task_library/contributing.md

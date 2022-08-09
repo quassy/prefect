@@ -43,7 +43,7 @@ and you're set! The `executor` keyword can also be provided to the `FlowRunner.r
 
 If you want to upgrade to a more powerful executor but still maintain an easily debuggable environment, we recommend the `LocalDaskExecutor`. This executor _does_ defer computation using `dask`, but avoids any parallelism, making for an execution pipeline which is easier to reason about.  You can turn parallelism on by providing either `scheduler="threads"` or `scheduler="processes"` when initializing this executor.
 
-!!! tip Prefect defaults
+!!! tip "Prefect defaults"
     You can set the `LocalDaskExecutor` to be the default executor on your local machine. To change your Prefect settings (including the default executor), you can either:
 
     - modify your `~/.prefect/config.toml` file
@@ -215,8 +215,8 @@ flow.run() # Success("All reference tasks succeeded.")
 
 If we have a complex dependency graph, `flow.replace` can be a real timesaver for quickly swapping out tasks while preserving all their dependencies!
 
-!!! warning Call Signatures
-    Note that `flow.replace` preserves edges - this means the old and new tasks need to have the exact same call signature.
+!!! warning "Call Signatures"
+    Note that `flow.replace` preserves edges &mdash; this means the old and new tasks need to have the exact same call signature.
 
 
 
@@ -352,5 +352,5 @@ ModuleNotFoundError: No module named 'praw'
 
 In this particular case, we forgot to include `praw` in our `python_dependencies` for the `Docker` storage; in general, this is one way to ensure your Flow makes it through the deployment process uncorrupted.
 
-!!! tip The More You Know
+!!! tip "The more you know"
     We actually found this process to be so useful, we've automated it for you! Prefect now performs a "health check" prior to pushing your Docker image, which essentially runs the above code and ensures your Flow is deserializable inside its container. However, the mechanics by which this occurs is still useful to know.

@@ -4,7 +4,7 @@
 
 Here we will dig into some of the more advanced features that Prefect offers; in the process, we will construct a real world workflow that highlights how Prefect can be a powerful tool for local development, allowing us to expressively and efficiently create, inspect and extend custom data workflows.
 
-!!! tip Our Goal
+!!! tip "Our goal"
     Inspired by the revival of the TV show "The X-Files" along with recent advances in Natural Language Processing, we seek to scrape transcripts of every X-Files episode from the internet and save them to a database so that we can create a chatbot based on the character of Dana Scully (actually creating the chatbot is left as an exercise to the reader).
 
 All code examples are intended to be executable on your local machine within an interactive Python or IPython session.
@@ -20,7 +20,7 @@ We will proceed in stages, introducing Prefect functionality as we go:
 
 As we proceed, we hope to ensure that our Flow is _reproducible_ and _reusable_ in the future.
 
-!!! warning BeautifulSoup4
+!!! warning "BeautifulSoup4"
     To easily navigate the webpages, we will be using the package [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/bs4/doc/), which is not a requirement for Prefect. To install `BeautifulSoup4`, run either:
 
     ```
@@ -86,7 +86,7 @@ def scrape_dialogue(episode_html):
     return (title, dialogue)
 ```
 
-Now that we have our tasks, all that's left is to put them together into a flow; because we want to re-use these tasks for other episodes, we will leave the URL as a `Parameter` that should be provided at runtime. We assume you have familiarized yourself with [the basics](etl.html) of constructing a Prefect flow and the [use of `Parameters`](calculator.html).
+Now that we have our tasks, all that's left is to put them together into a flow; because we want to re-use these tasks for other episodes, we will leave the URL as a `Parameter` that should be provided at runtime. We assume you have familiarized yourself with [the basics](../etl/) of constructing a Prefect flow and the [use of `Parameters`](../calculator/).
 
 ```python
 with Flow("xfiles") as flow:
@@ -98,7 +98,7 @@ with Flow("xfiles") as flow:
 flow.visualize()
 ```
 
-![simple flow](/simple_flow.svg){.viz-xs .viz-padded}
+![simple flow](/img/simple_flow.svg){.viz-xs .viz-padded}
 
 Awesome! We've constructed our flow and everything looks good; all that's left is to run it. When we call `flow.run()` we need to provide two keywords:
 
@@ -205,7 +205,7 @@ To highlight the benefits of `map`, note that we went from scraping a single epi
 flow.visualize()
 ```
 
-![full scrape flow](/full_scrape_flow.svg){.viz-md .viz-padded}
+![full scrape flow](/img/full_scrape_flow.svg){.viz-md .viz-padded}
 
 !!! tip How mapped tasks are returned
     In a flow run, `flow_state.result[task]` returns the post-run `State` of the `task` (e.g., `Success("Task run succeeded")`). If the task was the result of calling `.map()`, `flow_state.result[task]` will be a special kind of state called a `Mapped` state. This `Mapped` state has two special attributes worth knowing about:
@@ -322,7 +322,7 @@ with flow:
 flow.visualize()
 ```
 
-![full db flow](/full_db_flow.svg){.viz-md .viz-padded}
+![full db flow](/img/full_db_flow.svg){.viz-md .viz-padded}
 
 We are now ready to execute our flow! Of course, we have _already_ scraped all the dialogue - there's no real need to redo all that work. This is where our previous flow state (`scraped_state`) comes in handy! Recall that `scraped_state.result` will be a dictionary of tasks to their corresponding states; consequently we can feed this information to the next flow run via the `task_states` keyword argument. These states will then be used in determining whether each task should be run or whether they are already finished. Because we have added _new_ tasks to the flow, the new tasks will not have a corresponding state in this dictionary and will run as expected.
 
