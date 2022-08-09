@@ -1,7 +1,5 @@
 # Schedules
 
-## Overview
-
 Prefect assumes that flows can be run at any time, for any reason. However, it is often useful to automate flow runs at certain times. Simple schedules can be attached to Flows via the `schedule` keyword argument. For more detailed or complex schedules, Prefect provides a versatile `Schedule` object which allows for subtle date time adjustments and filtering, along with updating `Parameter` values based on the scheduled time.
 
 ## Simple Schedules
@@ -45,7 +43,7 @@ Note that many examples here use the [Pendulum](https://pendulum.eustace.io/) Py
 
 #### Interval clocks
 
-The most basic Prefect clock is the [`IntervalClock`](/api/latest/schedules/clocks.html#intervalclock). It takes an `interval` argument and emits events on a regular basis. An optional `start_date` can be provided, in which case the intervals will be relative to that date; an `end_date` can be provided as well.
+The most basic Prefect clock is the [`IntervalClock`](/api-ref/latest/schedules/clocks/#intervalclock). It takes an `interval` argument and emits events on a regular basis. An optional `start_date` can be provided, in which case the intervals will be relative to that date; an `end_date` can be provided as well.
 
 Prefect does not support sub-minute schedules.
 
@@ -71,9 +69,7 @@ schedule.next(5)
     )
     ```
 
-
-
-!!! warning Daylight Saving Time
+!!! warning "Daylight Saving Time"
     If the `IntervalClock` start time is provided with a DST-observing timezone, then the schedule will adjust itself appropriately. Intervals greater than 24 hours will follow DST conventions, while intervals of less than 24 hours will follow UTC intervals. For example, an hourly schedule will fire every UTC hour, even across DST boundaries. When clocks are set back, this will result in two runs that _appear_ to both be scheduled for 1am local time, even though they are an hour apart in UTC time. For longer intervals, like a daily schedule, the interval schedule will adjust for DST boundaries so that the clock-hour remains constant. This means that a daily schedule that always fires at 9am will observe DST and continue to fire at 9am in the local time zone.
 
     Note that this behavior is different from the `CronClock`.
@@ -81,7 +77,7 @@ schedule.next(5)
 
 #### Cron clocks
 
-Clocks can also be generated from cron strings with the Prefect [`CronClock`](/api/latest/schedules/clocks.html#cronclock).
+Clocks can also be generated from cron strings with the Prefect [`CronClock`](/api-ref/latest/schedules/clocks/#cronclock).
 
 ```python
 from datetime import timedelta
@@ -93,7 +89,7 @@ schedule = Schedule(clocks=[CronClock("0 0 * * *")])
 schedule.next(5)
 ```
 
-!!! warning Daylight Saving Time
+!!! warning "Daylight Saving Time"
     If the `CronClock` start time is provided with a DST-observing timezone, then the schedule will adjust itself. Cron's rules for DST are based on clock times, not intervals. This means that an hourly cron schedule will fire on every new clock hour, not every elapsed hour; for example, when clocks are set back this will result in a two-hour pause as the schedule will fire _the first time_ 1am is reached and _the first time_ 2am is reached, 120 minutes later. Longer schedules, such as one that fires at 9am every morning, will automatically adjust for DST.
 
     Note that this behavior is different from the `IntervalClock`.
@@ -101,7 +97,7 @@ schedule.next(5)
 
 #### Date clocks
 
-For more ad-hoc schedules, Prefect provides a [`DatesClock`](/api/latest/schedules/clocks.html#datesclock) that only fires on specific, user-provided dates.
+For more ad-hoc schedules, Prefect provides a [`DatesClock`](/api-ref/latest/schedules/clocks/#datesclock) that only fires on specific, user-provided dates.
 
 ```python
 import pendulum
@@ -117,7 +113,7 @@ schedule.next(2)
 
 #### Recurrence Rule Clocks
 
-The Prefect [`RRuleClock`](/api/latest/schedules/clocks.html#rruleclock) supports [iCal recurrence rules](https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html) (RRules), which provide convenient syntax for creating repetitive schedules. Schedules can repeat on a frequency from yearly down to every minute. 
+The Prefect [`RRuleClock`](/api-ref/latest/schedules/clocks/#rruleclock) supports [iCal recurrence rules](https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html) (RRules), which provide convenient syntax for creating repetitive schedules. Schedules can repeat on a frequency from yearly down to every minute. 
 
 `RRuleClock` uses the [dateutil rrule module](https://dateutil.readthedocs.io/en/stable/rrule.html) to specify iCal recurrence rules.
 

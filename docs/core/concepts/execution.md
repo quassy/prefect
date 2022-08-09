@@ -2,8 +2,6 @@
 
 Within the Prefect engine, there are many ways for users to affect execution.
 
-[[toc]]
-
 ## Triggers
 
 Trigger functions decide if a task is ready to run, based on the states of the upstream tasks. Prefect tasks won't run unless their triggers pass.
@@ -12,7 +10,7 @@ By default, tasks have an `all_successful` trigger, meaning they won't run unles
 
 Tasks will only evaluate their triggers if all upstream tasks are in `Finished` states. Therefore, the `all_finished` trigger is the same as an `always_run` trigger.
 
-!!! tip Use a manual_only trigger to pause a flow
+!!! tip "Use a manual_only trigger to pause a flow"
     The `manual_only` trigger always puts the task in a `Paused` state, so the flow will never run a `manual_only` task automatically. This allows users to pause a flow mid-run. To resume, put the task in a `Resume` state and set it as one of the run's `start_tasks`. This will treat is as a root task with no upstream tasks, and skip the trigger check entirely.
 
 
@@ -95,6 +93,7 @@ The `Context` can be accessed at any time, and Prefect will populate it with inf
 
 ### Adding context globally
 Adding context globally is possible via your `config.toml` in a section called `[context]`. For any keys specified here, as long as Prefect Core does not override this key internally, it will be accessible globally from `prefect.context`, even outside of a flow run.
+
 ```
 # config.toml
 [context]
@@ -109,6 +108,7 @@ a = 1
 
 ### Modifying context at runtime
 Modifying context, even globally set context keys, at specific times is possible using a provided context manager:
+
 ```python
 >>> import prefect
 >>> with prefect.context(a=2):
@@ -139,7 +139,7 @@ with prefect.context(key='abc'):
 ### Prefect-supplied context
 In addition to your own context keys, Prefect supplies context to the context object dynamically during flow runs and task runs. This context provides some standard information about the current flow or task. For example, running tasks already know about the day they are run from Prefect-provided context:
  
-```python{4}
+```python
 @task
 def report_start_day():
     logger = prefect.context.get("logger")
@@ -150,7 +150,8 @@ with Flow('My flow') as flow:
 
 flow.run()
 ```
-```text{5}
+
+```bash
 [2020-03-02 22:15:58,779] INFO - prefect.FlowRunner | Beginning Flow run for 'My flow'
 [2020-03-02 22:15:58,780] INFO - prefect.FlowRunner | Starting flow run.
 [2020-03-02 22:15:58,786] INFO - prefect.TaskRunner | Task 'report_start_time': Starting task run...
@@ -160,11 +161,11 @@ flow.run()
 ```
 Using this context can be useful to write time-aware tasks, such as tasks that trigger future work respective to its start time using `prefect.context.tomorrow` or processing only the prior day's data by using `prefect.context.yesterday`.
 
-!!! tip What else is in context?
-    For an exhaustive list of values that you can find in context, see the corresponding [API documentation](../../api/latest/utilities/context.html).
+!!! tip "What else is in context?"
+    For an exhaustive list of values that you can find in context, see the corresponding [API documentation](/api-ref/latest/utilities/context.html).
 
 
-!!! warning Caveats to modifying Prefect-supplied context
+!!! warning "Caveats to modifying Prefect-supplied context"
     Since Prefect uses some context internally to track metadata during the flow and task run logic, modifying Prefect-supplied context keys can have unintended consequences. It is recommended to generally avoid overriding the key names described in the API documentation.
 
     One exception to this is the timestamp related keys such as `prefect.context.today`. Users may wish to modify this context per flow run in order to implement "backfills", where individual flow runs execute on a subset of timeseries data.

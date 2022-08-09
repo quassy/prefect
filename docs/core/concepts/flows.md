@@ -1,7 +1,5 @@
 # Flows
 
-## Overview
-
 A `Flow` is a container for `Tasks`. It represents an entire workflow or application by describing the dependencies between tasks.
 
 Flows are DAGs, or "directed acyclic graphs." This is a mathematical way of describing certain organizational principles:
@@ -35,7 +33,7 @@ with Flow('My Functional Flow') as flow:
     y = plus_one(x=r)
 ```
 
-!!! tip Using Task Subclasses with the Functional API
+!!! tip "Using Task subclasses with the functional API"
     Note that in order to use a `Task` subclass with the functional API (as opposed to a `@task`-decorated function), you need to instantiate the class before calling it:
 
     ```python
@@ -77,9 +75,9 @@ flow.set_dependencies(
 flow.visualize()
 ```
 
-![](/assets/concepts/imperative_flow_example.png)
+![](/img/assets/concepts/imperative_flow_example.png)
 
-!!! tip
+!!! tip "Entrypoints for the imperative API"
     `flow.set_dependencies()` and `task.set_dependencies()` (the latter is only available inside an active flow context) are the main entrypoints for the imperative API. Flows also provide some lower-level methods like `add_task()` and `add_edge()` that can be used to manipulate the graph directly.
 
 
@@ -119,7 +117,7 @@ For more information, see the [Schedules concept doc](schedules.html).
 
 If `flow.run()` is called for a flow with a schedule attached, then it will run the flow on schedule. Note that it will wait for the next scheduled time and not start running immediately.
 
-!!! warning Concurrent flow runs are not supported by `flow.run()`
+!!! warning "Concurrent flow runs are not supported by `flow.run()`"
     `flow.run()` is a convenient way to run a flow on schedule, but it does not support concurrent flow runs. It will wait for a run to completely finish, including things like tasks that require retries, before starting the next run. However, Prefect schedules never return start times in the past. This means that if a flow run is still running when another flow run is supposed to start, the second flow run won't happen at all. If you require concurrent runs in a local process, consider using the lower-level `FlowRunner` classes directly.
 
 
@@ -131,7 +129,7 @@ The terminal tasks of the flow are any tasks that have no downstream dependencie
 
 Flows are not considered `Finished` until all of their terminal tasks finish, and will remain `Running` otherwise. By default, terminal tasks are also the flow's [reference tasks](#reference-tasks), and therefore determine its state.
 
-!!! tip Run order
+!!! tip "Run order"
     Prefect does not guarantee the order in which tasks will run, other than that tasks will not run before their upstream dependencies are evaluated. Therefore, you might have a terminal task that actually runs before other tasks in your flow, as long as it does not depend on those tasks.
 
 
@@ -150,7 +148,7 @@ with Flow('Reference Task Flow') as flow:
 assert flow.reference_tasks() == {c}
 ```
 
-!!! tip When should you change the reference tasks?
+!!! tip "When should you change the reference tasks?"
     Generally, a flow's terminal tasks are appropriate reference tasks. However, there are times when that isn't the case.
 
     Consider a flow that takes some action, and has a downstream task that only runs if the main action fails, in order to clean up the environment. If the main task fails and the clean up task is successful, was the flow as a whole successful? To some users, the answer is yes: the clean up operation worked as expected. To other users, the answer is no: the main purpose of the flow was not achieved.
@@ -180,7 +178,7 @@ flow.get_tasks(slug="x")
 
 ## State handlers
 
-State handlers allow users to provide custom logic that fires whenever a flow changes state. For example, you could send a Slack notification if the flow failed -- we actually think that's so useful we included it [here](/api/latest/utilities/notifications.html#functions)!
+State handlers allow users to provide custom logic that fires whenever a flow changes state. For example, you could send a Slack notification if the flow failed -- we actually think that's so useful we included it [here](/api-ref/latest/utilities/notifications/#functions)!
 
 State handlers must have the following signature:
 
@@ -202,7 +200,7 @@ Terminal state handlers must have the following signature:
 ```python
 terminal_state_handler(flow: Flow, state: State, reference_task_states: Set[State]) -> Optional[State]
 ```
-where:
+...where:
 
 - `flow` is the current Flow
 - `state` is the current state of the Flow

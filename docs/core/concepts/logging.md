@@ -40,7 +40,7 @@ def my_task():
     logger.warning("A warning message.")
 ```
 
-!!! tip Make sure to only access context while your task is running
+!!! tip "Make sure to only access context while your task is running"
     The Prefect `context` is populated when your task runs. Therefore, you should only access the context logger while your task is running. For example, this WON'T work:
 
     ```python
@@ -53,6 +53,7 @@ def my_task():
         logger.warning("A warning message.")
     ```
     Note, pickling context objects is explicitly not supported. You should always access context as an attribute of the `prefect` module. For example, this WON'T work:
+    
     ```python
     from prefect import context
 

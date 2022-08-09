@@ -81,4 +81,22 @@ nav:
             - core/tutorial/05-running-on-a-schedule.md
             - core/tutorial/06-parallel-execution.md
             - core/tutorial/07-next-steps.md
+        - Core Concepts: 
+            - core/concepts/tasks.md
+            - core/concepts/flows.md
+            - core/concepts/parameters.md
+            - core/concepts/states.md
+            - core/concepts/engine.md
+            - core/concepts/execution.md
+            - core/concepts/logging.md
+            - core/concepts/mapping.md
+            - core/concepts/notifications.md
+            - core/concepts/persistence.md
+            - core/concepts/results.md
+            - core/concepts/templating.md
+            - core/concepts/schedules.md
+            - core/concepts/secrets.md
+            - core/concepts/configuration.md
+            - core/concepts/best-practices.md
+            - core/concepts/common-pitfalls.md
     - Orchestration: orchestration/README.md

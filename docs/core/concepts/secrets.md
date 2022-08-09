@@ -1,7 +1,5 @@
 # Secrets
 
-## Overview
-
 Very often, workflows require sensitive information to run: API keys, passwords, tokens, credentials, etc. As a matter of best practice, such information should never be hardcoded into a workflow's source code, as the code itself will need to be guarded. Furthermore, sensitive information should not be provided via a Prefect `Parameter`, because Parameters, like many tasks, can have their results stored.
 
 Prefect provides a mechanism called `Secrets` for working with sensitive information.
@@ -9,9 +7,9 @@ Prefect provides a mechanism called `Secrets` for working with sensitive informa
 - `Secret` tasks, which are special tasks that can be used in your flow when working with sensitive information. Unlike regular tasks, `Secret` tasks are designed to access sensitive information at runtime and use a special `SecretResult` to ensure the results are not stored.
 - The `prefect.client.secrets` API, which provides a lower-level interface for working with sensitive information. This API can be used where tasks are unavailable, including notifications, state handlers, and result handlers.
 
-The most common case for secrets is to authenticate to third-party systems. For more information on best practices to do so, see our deployment recipe on [Third Party Authentication](../../orchestration/recipes/third_party_auth.md).
+The most common case for secrets is to authenticate to third-party systems. For more information on best practices to do so, see our deployment recipe on [Third Party Authentication](/orchestration/recipes/third_party_auth/).
 
-!!! tip Keep secrets secret!
+!!! tip "Keep secrets secret!"
     Though Prefect takes steps to ensure that `Secret` objects do not reveal sensitive information, other tasks may not be so careful. Once a secret value is loaded into your flow, it can be used for any purpose. Please use caution anytime you are working with sensitive data.
 
 
@@ -19,7 +17,7 @@ The most common case for secrets is to authenticate to third-party systems. For 
 
 ### Local Context
 
-The base `Secret` class first checks for secrets in local context, under `prefect.context.secrets`. This is useful for local testing, as secrets can be added to context by setting environment variables matching the configuration syntax `PREFECT__CONTEXT__SECRETS__{SECRETNAME}={SECRETVALUE}`. (Learn more about configuration in our [Configuration concept docs](configuration.md).)
+The base `Secret` class first checks for secrets in local context, under `prefect.context.secrets`. This is useful for local testing, as secrets can be added to context by setting environment variables matching the configuration syntax `PREFECT__CONTEXT__SECRETS__{SECRETNAME}={SECRETVALUE}`. (Learn more about configuration in our [Configuration concept docs](/core/concepts/configuration/).)
 
 For example, given an environment with the environment variable `PREFECT__CONTEXT__SECRETS__FOO=mypassword`, the value `"mypassword"` could be retrieved by using a `PrefectSecret` task or by using the Secrets API directly, as shown below.
 

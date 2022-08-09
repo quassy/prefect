@@ -26,7 +26,7 @@ assert reduced_result == 9
 
 Prefect's version of map/reduce is far more flexible than the classic implementation.
 
-When a task is mapped, Prefect automatically creates a copy of the task for each element of its input data. The copy -- referred to as a "child" task -- is applied only to that element. This means that mapped tasks actually represent the computations of many individual children tasks.
+When a task is mapped, Prefect automatically creates a copy of the task for each element of its input data. The copy &mdash; referred to as a "child" task &mdash; is applied only to that element. This means that mapped tasks actually represent the computations of many individual children tasks.
 
 If a "normal" (non-mapped) task depends on a mapped task, Prefect _automatically_ applies a reduce operation to gather the mapped results and pass them to the downstream task.
 
@@ -49,7 +49,7 @@ state = flow.run()
 assert state.result[reduced_result].result == 9
 ```
 
-!!! tip Dynamically-generated children tasks are first-class tasks
+!!! tip "Dynamically-generated children tasks are first-class tasks"
     Even though the user didn't create them explicitly, the children tasks of a mapped task are first-class Prefect tasks. They can do anything a "normal" task can do, including succeed, fail, retry, pause, or skip.
 
 
@@ -72,7 +72,7 @@ with Flow('simple map') as flow:
 
 The result of the `mapped_result` task will be `[11, 12, 13]` when the flow is run.
 
-!!! tip Child task execution
+!!! tip "Child task execution"
     The actual execution of the child tasks which are applied to each element of the list, can be concurrent or parallel. This depends on how the workflow is configured.
 
 
@@ -94,7 +94,7 @@ with Flow('iterated map') as flow:
 
 When this flow runs, the result of the `mapped_result_2` task will be `[21, 22, 23]`, which is the result of applying the mapped function twice.
 
-!!! tip No reduce required
+!!! tip "No reduce required"
     Even though we observed that the result of `mapped_result` was a list, Prefect won't apply a reduce step to gather that list unless the user requires it. In this example, we never needed the entire list (we only needed each of its elements), so no reduce took place. The two mapped tasks generated three completely-independent pipelines, each one containing two tasks.
 
 
@@ -125,7 +125,7 @@ with Flow('flat map') as f:
     c = C.map(y=flatten(b)) # [100, 100, 101, 100, 101, 102]
 ```
 
-!!! tip
+!!! tip" Using `flatten()`"
     `flatten()` can be used on any task input, even if it isn't being mapped over.
 
 
@@ -202,7 +202,7 @@ In the example above, `raw_out` will contain `[0, RuntimeError, SKIP, None, 4]`.
 
 ## Unmapped inputs
 
-When a task is mapped over its inputs, it retains the same call signature and arguments, but iterates over the inputs to generate its children tasks. Sometimes, we don't want to iterate over one of the inputs -- perhaps it's a constant value, or a list that's required in its entirety. Prefect supplies a convenient `unmapped()` annotation for this case.
+When a task is mapped over its inputs, it retains the same call signature and arguments, but iterates over the inputs to generate its children tasks. Sometimes, we don't want to iterate over one of the inputs &mdash; perhaps it's a constant value, or a list that's required in its entirety. Prefect supplies a convenient `unmapped()` annotation for this case.
 
 ```python
 from prefect import Flow, task, unmapped
@@ -219,7 +219,7 @@ This map will iterate over the `x` inputs but not over the `y` input. The result
 
 The `unmapped` annotation can be applied to any number of input arguments. This means that a mapped task can depend on both mapped and reduced upstream tasks seamlessly.
 
-!!! tip
+!!! tip "Mapping with `mapped()` input"
     Prefect also provides a `mapped()` annotation that can be used to indicate that an input should be mapped over when binding inputs without calling `.map()`
 
 ## Complex mapped pipelines

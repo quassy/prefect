@@ -2,6 +2,7 @@
 
 There are several places within Prefect where names can be templated at runtime to create a value relevant to that specific run.
 These names can be passed as literal strings, e.g. `"my_foo_task"`, but to get dynamic values based on the current state, we'll need to use _template_ strings.
+
 Here, we take advantage of Python's [format string](https://www.python.org/dev/peps/pep-3101/#format-strings) and provide various arguments.
 Instead of a static string, you'll pass a string that will be formatted at runtime, e.g. `"foo-{today}"`, where `today` is the name of one of the variables we provide.
 
@@ -9,19 +10,19 @@ Instead of a static string, you'll pass a string that will be formatted at runti
 
 Templating is available for:
 
-- [Task run names](/core/idioms/task-run-names.html)
-- [Task target paths](/core/idioms/targets.html)
-- [Task result locations](/core/concepts/results.html#templating-result-locations)
+- [Task run names](/core/idioms/task-run-names/)
+- [Task target paths](/core/idioms/targets/)
+- [Task result locations](/core/concepts/results/#templating-result-locations)
 
 ## What variables can I use?
 
 All templatable objects are passed:
 
-- The [Parameters](/core/concepts/parameters.html) of the flow
-- The contents of the [Prefect context](/api/latest/utilities/context.html)
+- The [Parameters](/core/concepts/parameters/) of the flow
+- The contents of the [Prefect context](/api-ref/latest/utilities/context/)
 - The inputs to the task
 
-!!! warning Naming collisions
+!!! warning "Naming collisions"
     The variables are loaded in the order shown above. Collisions will be resolved such that the last loaded value overwrites those above it. For example, if your a task input name is the same as the name of a variable in the context, the input variable value will overwrite context value.
 
 
@@ -127,7 +128,7 @@ with Flow("local-result-with-date-parsing") as flow:
     my_task()
 ```
 
-!!! tip Python date formatting
+!!! tip "Python date formatting"
     You can also format dates with the [Python built-in formatting](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior). 
     For example, the following will create a name like `Tuesday-Dec-29`
 

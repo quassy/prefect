@@ -1,7 +1,5 @@
 # Tasks
 
-## Overview
-
 A `Task` represents a discrete action in a Prefect workflow.
 
 A task is like a function: it optionally takes inputs, performs an action, and produces an optional result. In fact, the easiest way to create a task is by decorating a Python function:
@@ -32,7 +30,7 @@ class HTTPGetTask(Task):
 
 All `Task` subclasses must have a `run()` method.
 
-!!! tip Tasks may be run individually
+!!! tip "Tasks may be run individually"
     A task's `run` method can be called anytime for testing:
 
     ```python
@@ -41,7 +39,7 @@ All `Task` subclasses must have a `run()` method.
 
 
 
-Tasks allow a great deal of customization via arguments that may be provided to either the `Task` class constructor or the `@task` decorator. Examples include retry behavior, triggers, names, tags, and more. For a complete description, see the [Task API docs](/api/latest/core/task.html).
+Tasks allow a great deal of customization via arguments that may be provided to either the `Task` class constructor or the `@task` decorator. Examples include retry behavior, triggers, names, tags, and more. For a complete description, see the [Task API docs](/api-ref/latest/core/task/).
 
 When using the `@task` decorator, you can override arguments on a per-task basis by passing them to a special `task_args` keyword argument:
 
@@ -58,12 +56,12 @@ assert a.name == "a"
 assert b.name == "b"
 ```
 
-!!! tip How big should a task be?
+!!! tip "How big should a task be?"
     People often wonder how much code to put in each task.
 
-    Prefect encourages "small tasks" -- each one should represent a single logical step of your workflow. This allows Prefect to better contain task failures.
+    Prefect encourages "small tasks" &mdash; each one should represent a single logical step of your workflow. This allows Prefect to better contain task failures.
 
-    To be clear, there's nothing stopping you from putting all of your code in a single task -- Prefect will happily run it! However, if any line of code fails, the entire task will fail and need to be retried from the beginning. This can be trivially avoided by splitting the code into multiple dependent tasks.
+    To be clear, there's nothing stopping you from putting all of your code in a single task &mdash; Prefect will happily run it! However, if any line of code fails, the entire task will fail and need to be retried from the beginning. This can be trivially avoided by splitting the code into multiple dependent tasks.
 
 
 ## Retries
@@ -75,7 +73,7 @@ One of the most common reasons to put code in a Prefect task is to automatically
 Task(max_retries=3, retry_delay=datetime.timedelta(minutes=10))
 ```
 
-!!! tip Retries don't create new task runs
+!!! tip "Retries don't create new task runs"
     A new task run is not created when a task is retried. A new state is added to the state history of the original task run.
 
 
@@ -83,7 +81,7 @@ Task(max_retries=3, retry_delay=datetime.timedelta(minutes=10))
 
 Before a Prefect task runs, it evaluates a "trigger function" to decide whether it should run at all. Triggers are functions that receive the states of any upstream tasks and return `True` if the task should run, or `False` (or raise an error) otherwise. If a task's trigger fails and does not raise a more specific error, the task will enter a `TriggerFailed` state, which is a more specific type of `Failed` state that indicates that the task failed to run, but because of its trigger function, not its own code.
 
-!!! tip Skips are treated as successes
+!!! tip "Skips are treated as successes"
     In Prefect, skipped tasks are treated as if they succeeded. This is because skips only take place if users want them to, so they represent the "successful" execution of a user's design. However, by default, skips also propagate: a task that follows a skipped task will also skip, unless it receives `skip_on_upstream_skip=False`.
 
 
@@ -124,7 +122,7 @@ Prefect will attempt to automatically turn Python objects into `Constants`, incl
 
 ## Operators
 
-When using the [functional API](flows.html#functional-api), Prefect tasks support basic mathematical and logical operators. For example:
+When using the [functional API](/core/concepts/flows/#functional-api), Prefect tasks support basic mathematical and logical operators. For example:
 
 ```python
 import random
@@ -146,13 +144,13 @@ with Flow('Using Operators') as flow:
 
 These operators automatically add new tasks to the active flow context.
 
-!!! warning Operator validation
+!!! warning "Operator validation"
     Because Prefect flows are not executed when you create them, Prefect can not validate that operators are being applied to compatible types. For example, you could subtract a task that produces a list from a task that produces an integer. This would create an error at runtime, but not during task definition.
 
 
 ## Collections
 
-When using the [functional API](flows.html#functional-api), Prefect tasks can automatically be used in collections. For example:
+When using the [functional API](/core/concepts/flows/#functional-api), Prefect tasks can automatically be used in collections. For example:
 
 ```python
 import random
@@ -178,7 +176,7 @@ Prefect will perform automatic collection extraction for lists, tuples, sets, an
 
 ## Indexing
 
-When using the [functional API](flows.html#functional-api), Prefect tasks can be indexed to retrieve specific results.
+When using the [functional API](/core/concepts/flows/#functional-api), Prefect tasks can be indexed to retrieve specific results.
 
 ```python
 from prefect import Flow, task
@@ -195,7 +193,7 @@ with Flow('Indexing Flow') as flow:
 
 This will automatically add a `GetItem` task to the flow that receives `x` as its input and attempts to perform `x['a']`. The result of that task (`1`) is stored as `y`.
 
-!!! warning Key validation
+!!! warning "Key validation"
     Because Prefect flows are not executed when you create them, Prefect can not validate that the indexed key is available ahead of time. Therefore, Prefect will allow you to index any task by any value. If the key does not exist when the flow is actually run, a runtime error will be raised.
 
 
@@ -251,9 +249,9 @@ the convenience of tuple unpacking.
 
 ## Mapping
 
-_For more detail, see the [mapping concept docs](mapping.html)._
+_For more detail, see the [mapping concept docs](/core/concepts/mapping/)._
 
-Generally speaking, Prefect's [functional API](flows.html#functional-api) allows you to call a task like a function.
+Generally speaking, Prefect's [functional API](/core/concepts/flows/#functional-api) allows you to call a task like a function.
 
 In addition, you can call `Task.map()` to automatically map a task over its inputs. Prefect will generate a dynamic copy of the task for each element of the input. If you don't want an input to be treated as iterable (for example, you want to provide it to every dynamic copy), just wrap it with Prefect's `unmapped()` annotation.
 
@@ -278,7 +276,7 @@ In addition, if the result of a mapped task is passed to an un-mapped task (or u
 
 ## Flattening
 
-_For more detail, see the [mapping concept docs](mapping.html)._
+_For more detail, see the [mapping concept docs](/core/concepts/mapping/)._
 
 To "un-nest" a task that returns a list of lists, use Prefect's `flatten()` annotation. This is most useful when a task in a mapped pipeline returns a sequence.
 
@@ -330,7 +328,7 @@ flow.get_tasks(tags=['red'])
 
 ## State handlers
 
-State handlers allow users to provide custom logic that fires whenever a task changes state. For example, you could send a Slack notification if the task failed -- we actually think that's so useful we included it [here](/api/latest/utilities/notifications.html#functions)!
+State handlers allow users to provide custom logic that fires whenever a task changes state. For example, you could send a Slack notification if the task failed -- we actually think that's so useful we included it [here](/api-ref/latest/utilities/notifications/#functions)!
 
 State handlers must have the following signature:
 
@@ -348,4 +346,4 @@ Handlers can also be associated with the `Flow`, `TaskRunner`, and `FlowRunner` 
 
 Tasks can be cached, in which case their outputs will be reused for future runs. For example, you might want to make sure that a database is loaded before generating reports, but you might not want to run the load task every time the flow is run. No problem: just cache the load task for 24 hours, and future runs will reuse its successful output.
 
-For more details, see the relevant docs under [execution](./execution.html#caching).
+For more details, see the relevant docs under [execution](/core/concepts/execution/#caching).

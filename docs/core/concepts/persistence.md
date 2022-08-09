@@ -3,9 +3,7 @@
 Prefect provides a few ways to work with cached data between tasks or flows. In-memory caching of task **inputs** is automatically applied by the Prefect pipeline to optimize retries or other times when Prefect can anticipate rerunning the same task in the future. Users can also configure to cache the **output** of a prior run of a task and use it as the output of a future run of that task or even as the output of a run of a different task.
 
 Out of the box, Prefect Core does not persist cached data in a permanent fashion. All data, results, _and_ cached states are only stored in memory within the
-Python process running the flow. However, Prefect Core provides all of the necessary hooks for configuring your data to be persisted and retrieved from external locations. When combined with a compatible state persistence layer, such as Prefect Core's server or [Prefect Cloud](/orchestration/getting-started/set-up.html), this means flows can pick up exactly where they left off if the in-memory cache is lost.
-
-[[toc]]
+Python process running the flow. However, Prefect Core provides all of the necessary hooks for configuring your data to be persisted and retrieved from external locations. When combined with a compatible state persistence layer, such as Prefect Core's server or [Prefect Cloud](/orchestration/getting-started/set-up/), this means flows can pick up exactly where they left off if the in-memory cache is lost.
 
 ## Input Caching
 
@@ -13,7 +11,7 @@ When running a Prefect flow, it's common to have tasks that will need to be re-r
 
 Whenever Prefect detects that a task will need to be run in the future, it automatically caches any information that the task needs to run and stores it on the resulting `State`. The next time Prefect encounters the task, the critical information is deserialized and used to run the task.
 
-!!! tip Automatic caching
+!!! tip "Automatic caching"
     Input caching is an automatic caching. Prefect will automatically apply it whenever necessary.
 
 
@@ -40,7 +38,7 @@ task_2 = prefect.Task(
     cache_validator=prefect.engine.cache_validators.all_parameters)
 ```
 
-!!! warning The cache is stored in context
+!!! warning "The cache is stored in context"
     Note that when running Prefect Core locally, your Tasks' cached states will be stored in memory within `prefect.context`.
 
 
@@ -70,10 +68,10 @@ def func_task():
     return 99
 ```
 
-There are many different `Result` classes aligning with different storage backends depending on your needs, such as `GCSResult` and `S3Result`. See the whole list in the [API docs for results](../../api/latest/engine/results.md).
+There are many different `Result` classes aligning with different storage backends depending on your needs, such as `GCSResult` and `S3Result`. See the whole list in the [API docs for results](/api-ref/latest/engine/results/).
 
-!!! tip Check your global configuration, too
-    The default setting in Prefect Core is that checkpointing is globally turned _off_, and the default setting in Prefect Cloud 0.9.1+ is that checkpointing is globally turned _on_. For more information, read the concepts documentation on [Results](results.md) and the setup tutorial on [Using Results](../advanced_tutorials/using-results.html).
+!!! tip "Check your global configuration, too"
+    The default setting in Prefect Core is that checkpointing is globally turned _off_, and the default setting in Prefect Cloud 0.9.1+ is that checkpointing is globally turned _on_. For more information, read the concepts documentation on [Results](/core/concepts/results/) and the setup tutorial on [Using Results](/core/advanced_tutorials/using-results/).
 
 
 ## Output Caching based on a file target
@@ -93,8 +91,8 @@ def func_task():
     return 99
 ```
 
-!!! tip Targets can be templated
-    Note that `target`s can optionally be templated, using [values found in `prefect.context`](/api/latest/utilities/context.html).  For example, the following target specification will store data based on the day of the week the flow is run on:
+!!! tip "Targets can be templated"
+    Note that `target`s can optionally be templated, using [values found in `prefect.context`](/api-ref/latest/utilities/context/).  For example, the following target specification will store data based on the day of the week the flow is run on:
 
     ```python
     from prefect.engine.results import LocalResult
