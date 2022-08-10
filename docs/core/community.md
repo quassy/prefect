@@ -4,7 +4,7 @@ sidebarDepth: 0
 
 # Community
 
-We welcome issues, contributions and discussion from all users, regardless of background or experience level. In order to create a positive and welcoming environment, all interactions are governed by Prefect's [Code of Conduct](code_of_conduct.md).
+We welcome issues, contributions and discussion from all users, regardless of background or experience level. In order to create a positive and welcoming environment, all interactions are governed by Prefect's [Code of Conduct](/core/code_of_conduct/).
 
 Please consider [Chris White](https://github.com/cicdw) the main point of contact for the Prefect repo.
 

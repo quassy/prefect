@@ -143,6 +143,9 @@ nav:
             - core/development/contributing.md
             - core/development/release-checklist.md
             - core/development/sprints.md
+        - FAQ: core/faq.md
+        - core/community.md
+        - core/code_of_conduct.md
     - Orchestration: orchestration/README.md
     - Task Library:
         - Overview: core/task_library/overview.md
