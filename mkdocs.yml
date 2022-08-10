@@ -165,7 +165,87 @@ nav:
         - core/code_of_conduct.md
     - Orchestration: 
         - Overview: orchestration/README.md
-
+        - Getting Started:
+            - orchestration/getting-started/quick-start.md
+            - orchestration/getting-started/install.md
+            - orchestration/getting-started/basic-core-flow.md
+            - orchestration/getting-started/set-up.md
+            - orchestration/getting-started/registering-and-running-a-flow.md
+            - orchestration/getting-started/next-steps.md
+            - orchestration/getting-started/flow-configs.md
+            - orchestration/getting-started/more-resources.md
+        - Concepts:
+            - orchestration/concepts/api.md
+            - orchestration/concepts/api_keys.md
+            - orchestration/concepts/cli.md
+            - orchestration/concepts/flows.md
+            - orchestration/concepts/projects.md
+            - orchestration/concepts/kv_store.md
+            - orchestration/concepts/secrets.md
+            - orchestration/concepts/automations.md
+            - orchestration/concepts/cloud_hooks.md
+            - orchestration/concepts/services.md
+            - orchestration/concepts/artifacts.md
+        - Flow Configuration:
+            - orchestration/flow_config/overview.md
+            - orchestration/flow_config/storage.md
+            - orchestration/flow_config/run_configs.md
+            - orchestration/flow_config/executors.md
+            - orchestration/flow_config/docker.md
+        - Flow Runs:
+            - orchestration/flow-runs/overview.md
+            - orchestration/flow-runs/creation.md
+            - orchestration/flow-runs/inspection.md
+            - orchestration/flow-runs/task-runs.md
+            - orchestration/flow-runs/scheduling.md
+            - orchestration/flow-runs/setting-states.md
+            - orchestration/flow-runs/concurrency-limits.md
+        - Agents:
+            - orchestration/agents/overview.md
+            - orchestration/agents/local.md
+            - orchestration/agents/docker.md
+            - orchestration/agents/kubernetes.md
+            - orchestration/agents/vertex.md
+            - orchestration/agents/ecs.md
+        - UI:
+            - orchestration/ui/dashboard.md
+            - orchestration/ui/flow.md
+            - orchestration/ui/flow-run.md
+            - orchestration/ui/task-run.md
+            - orchestration/ui/automations.md
+            - orchestration/ui/interactive-api.md
+            - orchestration/ui/team-settings.md
+        - Role-Based Access Controls: orchestration/rbac/overview.md
+        - Server:
+            - orchestration/server/overview.md
+            - orchestration/server/architecture.md
+            - orchestration/server/deploy-local.md
+            - orchestration/server/telemetry.md
+            - orchestration/server/troubleshooting.md
+        - Deployment Recipes:
+            - orchestration/recipes/third_party_auth.md
+            - orchestration/recipes/configuring_storage.md
+            - orchestration/recipes/multi_flow_storage.md
+            - orchestration/recipes/k8s_dask.md
+            - orchestration/recipes/k8s_docker_sidecar.md
+        - Integrations:
+            - orchestration/integrations/pagerduty.md
+        - FAQ:
+            - orchestration/faq/config.md
+            - orchestration/faq/dataflow.md
+            - orchestration/faq/debug.md
+            - orchestration/faq/faq.md
+            - orchestration/faq/upgrade_environments.md
+            - orchestration/faq/upgrading_1.0.md
+        - Legacy Environments:
+            - orchestration/execution/overview.md
+            - orchestration/execution/storage_options.md
+            - orchestration/execution/local_environment.md
+            - orchestration/execution/dask_cloud_provider_environment.md
+            - orchestration/execution/dask_k8s_environment.md
+            - orchestration/execution/k8s_job_environment.md
+            - orchestration/execution/fargate_task_environment.md
+            - orchestration/execution/custom_environment.md
     - Task Library:
         - Overview: core/task_library/overview.md
         - Contributing: core/task_library/contributing.md

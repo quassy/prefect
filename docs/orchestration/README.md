@@ -4,7 +4,7 @@ sidebarDepth: 0
 ---
 
 <div align="center" style="margin-top:50px; margin-bottom:40px;">
-    <img src="/illustrations/cloud-illustration.svg"  width=300 >
+    <img src="/img/illustrations/cloud-illustration.svg"  width=300 >
 </div>
 
 # Orchestration
