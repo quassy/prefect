@@ -272,23 +272,22 @@ nav:
             - api-ref/latest/backend/tenant.md
         - prefect.cli:
             - api-ref/latest/cli/agent.md
+            - api-ref/latest/cli/auth.md
+            - api-ref/latest/cli/build.md
+            - api-ref/latest/cli/create.md
+            - api-ref/latest/cli/delete.md
+            - api-ref/latest/cli/describe.md
             - api-ref/latest/cli/get.md
             - api-ref/latest/cli/kv_store.md
-            - api-ref/latest/cli/register.md
-            - api-ref/latest/cli/create.md
-            - api-ref/latest/cli/auth.md
-            - api-ref/latest/cli/describe.md
-            - api-ref/latest/cli/build.md
-            - api-ref/latest/cli/delete.md
-            - api-ref/latest/cli/server.md
             - api-ref/latest/cli/run.md
+            - api-ref/latest/cli/server.md
         - prefect.client:
             - api-ref/latest/client/client.md
             - api-ref/latest/client/secrets.md
         - prefect.core:
             - api-ref/latest/core/edge.md
             - api-ref/latest/core/flow.md
-            - api-ref/latest/core/parameters.md
+            - api-ref/latest/core/parameter.md
             - api-ref/latest/core/task.md
         - prefect.engine:
             - api-ref/latest/engine/cache_validators.md
@@ -311,60 +310,60 @@ nav:
             - api-ref/latest/tasks/asana.md
             - api-ref/latest/tasks/aws.md
             - api-ref/latest/tasks/azure.md
-            - api-ref/latest/tasks/azureml.md
-            - api-ref/latest/tasks/census.md
-            - api-ref/latest/tasks/collections.md
-            - api-ref/latest/tasks/constants.md
-            - api-ref/latest/tasks/control_flow.md
-            - api-ref/latest/tasks/cubejs.md
-            - api-ref/latest/tasks/databricks.md
-            - api-ref/latest/tasks/dbt.md
-            - api-ref/latest/tasks/docker.md
-            - api-ref/latest/tasks/dremio.md
-            - api-ref/latest/tasks/dropbox.md
-            - api-ref/latest/tasks/exasol.md
-            - api-ref/latest/tasks/files.md
-            - api-ref/latest/tasks/firebolt.md
-            - api-ref/latest/tasks/fivetran.md
-            - api-ref/latest/tasks/function.md
-            - api-ref/latest/tasks/gcp.md
-            - api-ref/latest/tasks/github.md
-            - api-ref/latest/tasks/great_expectations.md
-            - api-ref/latest/tasks/gsheets.md
-            - api-ref/latest/tasks/Hightouch.md
-            - api-ref/latest/tasks/jira.md
-            - api-ref/latest/tasks/jupyter.md
-            - api-ref/latest/tasks/kafka.md
-            - api-ref/latest/tasks/kubernetes.md
-            - api-ref/latest/tasks/mixpanel.md
-            - api-ref/latest/tasks/monday.md
-            - api-ref/latest/tasks/monte_carlo.md
-            - api-ref/latest/tasks/mysql.md
-            - api-ref/latest/tasks/Neo4j.md
-            - api-ref/latest/tasks/notifications.md
-            - api-ref/latest/tasks/operators.md
-            - api-ref/latest/tasks/postgres.md
-            - api-ref/latest/tasks/prefect.md
-            - api-ref/latest/tasks/prometheus.md
-            - api-ref/latest/tasks/redis.md
-            - api-ref/latest/tasks/resources.md
-            - api-ref/latest/tasks/rss.md
-            - api-ref/latest/tasks/secrets.md
-            - api-ref/latest/tasks/sendgrid.md
-            - api-ref/latest/tasks/sftp.md
-            - api-ref/latest/tasks/shell.md
-            - api-ref/latest/tasks/snowflake.md
-            - api-ref/latest/tasks/sodaspark.md
-            - api-ref/latest/tasks/sodasql.md
-            - api-ref/latest/tasks/spacy.md
-            - api-ref/latest/tasks/sql_server.md
-            - api-ref/latest/tasks/sqlite.md
-            - api-ref/latest/tasks/strings.md
-            - api-ref/latest/tasks/toloka.md
-            - api-ref/latest/tasks/Transform.md
-            - api-ref/latest/tasks/trello.md
-            - api-ref/latest/tasks/twitter.md
-            - api-ref/latest/tasks/zendesk.md
+            # - api-ref/latest/tasks/azureml.md
+            # - api-ref/latest/tasks/census.md
+            # - api-ref/latest/tasks/collections.md
+            # - api-ref/latest/tasks/constants.md
+            # - api-ref/latest/tasks/control_flow.md
+            # - api-ref/latest/tasks/cubejs.md
+            # - api-ref/latest/tasks/databricks.md
+            # - api-ref/latest/tasks/dbt.md
+            # - api-ref/latest/tasks/docker.md
+            # - api-ref/latest/tasks/dremio.md
+            # - api-ref/latest/tasks/dropbox.md
+            # - api-ref/latest/tasks/exasol.md
+            # - api-ref/latest/tasks/files.md
+            # - api-ref/latest/tasks/firebolt.md
+            # - api-ref/latest/tasks/fivetran.md
+            # - api-ref/latest/tasks/function.md
+            # - api-ref/latest/tasks/gcp.md
+            # - api-ref/latest/tasks/github.md
+            # - api-ref/latest/tasks/great_expectations.md
+            # - api-ref/latest/tasks/gsheets.md
+            # - api-ref/latest/tasks/hightouch.md
+            # - api-ref/latest/tasks/jira.md
+            # - api-ref/latest/tasks/jupyter.md
+            # - api-ref/latest/tasks/kafka.md
+            # - api-ref/latest/tasks/kubernetes.md
+            # - api-ref/latest/tasks/mixpanel.md
+            # - api-ref/latest/tasks/monday.md
+            # - api-ref/latest/tasks/monte_carlo.md
+            # - api-ref/latest/tasks/mysql.md
+            # - api-ref/latest/tasks/neo4j.md
+            # - api-ref/latest/tasks/notifications.md
+            # - api-ref/latest/tasks/operators.md
+            # - api-ref/latest/tasks/postgres.md
+            # - api-ref/latest/tasks/prefect.md
+            # - api-ref/latest/tasks/prometheus.md
+            # - api-ref/latest/tasks/redis.md
+            # - api-ref/latest/tasks/resources.md
+            # - api-ref/latest/tasks/rss.md
+            # - api-ref/latest/tasks/secrets.md
+            # - api-ref/latest/tasks/sendgrid.md
+            # - api-ref/latest/tasks/sftp.md
+            # - api-ref/latest/tasks/shell.md
+            # - api-ref/latest/tasks/snowflake.md
+            # - api-ref/latest/tasks/sodaspark.md
+            # - api-ref/latest/tasks/sodasql.md
+            # - api-ref/latest/tasks/spacy.md
+            # - api-ref/latest/tasks/sql_server.md
+            # - api-ref/latest/tasks/sqlite.md
+            # - api-ref/latest/tasks/strings.md
+            # - api-ref/latest/tasks/toloka.md
+            # - api-ref/latest/tasks/transform.md
+            # - api-ref/latest/tasks/trello.md
+            # - api-ref/latest/tasks/twitter.md
+            # - api-ref/latest/tasks/zendesk.md
         - prefect.utilities:
             - api-ref/latest/utilities/collections.md
             - api-ref/latest/utilities/configuration.md
