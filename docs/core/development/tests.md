@@ -2,29 +2,29 @@
 
 Prefect loves tests! There are a few important reasons to write tests:
 
-- **Make sure your code works**
+**Make sure your code works**
 
-  Tests ensure that your code does the thing you intend it to do.
+Tests ensure that your code does the thing you intend it to do.
 
-  If you have a function that adds two numbers, you'll want to test that it does, in fact, return their sum. If behavior depends on a configuration setting, ensure that changing that setting changes the behavior. In short, if you wrote a line of code, you should test that line works as expected.
+If you have a function that adds two numbers, you'll want to test that it does, in fact, return their sum. If behavior depends on a configuration setting, ensure that changing that setting changes the behavior. In short, if you wrote a line of code, you should test that line works as expected.
 
-- **Make sure your code doesn't not work**
+**Make sure your code doesn't not work**
 
-  It may seem silly, but another important reason to write tests is to ensure that your code behaves as expected _even when it's broken_.
+It may seem silly, but another important reason to write tests is to ensure that your code behaves as expected _even when it's broken_.
 
-  This is especially important for a project like Prefect, which is focused on helping engineers when something unexpected happens to their code. For example, you could write tests about what you expect to happen if your function is called with incorrect (or no) arguments, or to ensure that any errors are properly trapped and handled.
+This is especially important for a project like Prefect, which is focused on helping engineers when something unexpected happens to their code. For example, you could write tests about what you expect to happen if your function is called with incorrect (or no) arguments, or to ensure that any errors are properly trapped and handled.
 
-* **Tests are documentation**
+**Tests are documentation**
 
-  Ultimately, your tests are the best documentation for your code.
+Ultimately, your tests are the best documentation for your code.
 
-  Another developer should be able to look at your tests and understand what your code does, how to invoke it, and what edge cases it contains. Therefore, try to write short, self-explanatory tests with descriptive titles.
+Another developer should be able to look at your tests and understand what your code does, how to invoke it, and what edge cases it contains. Therefore, try to write short, self-explanatory tests with descriptive titles.
 
-* **Help future developers**
+**Help future developers**
 
-  As Prefect grows, your code will be reused in more and more places, by developers who may not be familiar with the details of your implementation. Therefore, your tests are an opportunity to ensure that your code is used correctly in the future.
+As Prefect grows, your code will be reused in more and more places, by developers who may not be familiar with the details of your implementation. Therefore, your tests are an opportunity to ensure that your code is used correctly in the future.
 
-  For example, if your code needs to be used in a certain way, or expects a certain configuration, or is always expected to return a certain output, or has any other details that might impact its ability to be used in the framework, write a test for it! At minimum, you'll help a future developer understand that you consciously chose to design your code a certain way.
+For example, if your code needs to be used in a certain way, or expects a certain configuration, or is always expected to return a certain output, or has any other details that might impact its ability to be used in the framework, write a test for it! At minimum, you'll help a future developer understand that you consciously chose to design your code a certain way.
 
 ## Writing tests
 
@@ -80,4 +80,4 @@ In CI, Prefect's unit tests are run against Python 3.7, 3.8, 3.9 and 3.10. A sep
 
 ## Documentation
 
-Prefect's API reference documentation is unit tested! If you don't describe an argument of any function, or use improperly formatted docstrings, you will get an error. For more details on docstrings, see the [documentation guide](documentation.md).
+Prefect's API reference documentation is unit tested! If you don't describe an argument of any function, or use improperly formatted docstrings, you will get an error. For more details on docstrings, see the [documentation guide](/core/development/documentation/).

@@ -135,6 +135,14 @@ nav:
             - core/PINs/PIN-14-Listener-Flows-2.md
             - core/PINs/PIN-15-Skip-as-Finished-and-Conditionals.md
             - core/PINs/PIN-16-Results-and-Targets.md
+        - Development:
+            - core/development/overview.md
+            - core/development/style.md
+            - core/development/documentation.md
+            - core/development/tests.md
+            - core/development/contributing.md
+            - core/development/release-checklist.md
+            - core/development/sprints.md
     - Orchestration: orchestration/README.md
     - Task Library:
         - Overview: core/task_library/overview.md

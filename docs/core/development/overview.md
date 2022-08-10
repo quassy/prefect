@@ -23,6 +23,7 @@ To clone Prefect for development, we recommend creating an "editable" install of
 ```bash
 git clone https://github.com/PrefectHQ/prefect.git
 cd prefect
+git checkout 1.x
 pip install -e ".[dev]"
 ```
 
@@ -30,10 +31,10 @@ pip install -e ".[dev]"
 
 We have no doubt you can write amazing code! However, we want to help you ensure your code plays nicely with the rest of the Prefect ecosystem. Many projects describe code style and documentation as a suggestion; in Prefect it's a unit-tested requirement.
 
-- To learn how to style your code, see the [style guide](style.md).
-- To learn how to document your code, see the [docs guide](documentation.md).
-- To learn how to test your code, see the [tests guide](tests.md).
-- To learn about contributing, see the [contribution guide](contributing.md).
+- To learn how to style your code, see the [style guide](/core/development/style/).
+- To learn how to document your code, see the [docs guide](/core/development/documentation/).
+- To learn how to test your code, see the [tests guide](/core/development/tests/).
+- To learn about contributing, see the [contribution guide](/core/development/contributing/).
 
 ### Submit your code
 

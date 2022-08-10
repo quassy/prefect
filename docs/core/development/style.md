@@ -27,7 +27,7 @@ In addition, a number of extensions are available for popular editors that will 
 
 Prefect auto-generates API documentation from docstrings by compiling them to Markdown. In order for docstrings to compile correctly, please follow these rules:
 
-!!! tip Docstring Formatting
+!!! tip "Docstring formatting"
     - All documentation about class initialization should go into the class docstring, _not_ the `__init__` method docstring.
     - Any references to "code" or variable names should be surrounded by backticks so it will be properly formatted in Markdown.
     - Arguments are indicated by the word `Args:` followed by a Markdown list that indicates each argument's name, type, and description:

@@ -22,7 +22,7 @@ We recommend following [Chris Beam's style guide](https://chris.beams.io/posts/g
 
 ### Changelog
 
-It's important to update Prefect's [changelog](/api/latest/changelog.html) with
+It's important to update Prefect's [changelog](/api-ref/latest/changelog/) with
 any adjustments to the project. Each release has a few sections:
 
 - Features: headline additions to the system
@@ -72,4 +72,4 @@ Make sure that any new functionality is well tested! See the [tests](../developm
 
 ### Opening a PR
 
-A helpful PR explains WHAT changed and WHY the change is important. Please take time to make your PR descriptions as helpful as possible -- both for code review today and information in the future.
+A helpful PR explains WHAT changed and WHY the change is important. Please take time to make your PR descriptions as helpful as possible &mdash; both for code review today and information in the future.
