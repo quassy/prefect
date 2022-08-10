@@ -1,11 +1,11 @@
 
 # Logging configuration and usage
 
-Prefect natively ships with a default logger configured to handle the management of logs. More information on logging in Prefect can be found in the [logging concept document](/core/concepts/logging.html).
+Prefect natively ships with a default logger configured to handle the management of logs. More information on logging in Prefect can be found in the [logging concept document](/core/concepts/logging/).
 
 ### Configure the logger
 
-The default Prefect logger can be configured by adjusting the settings found in [Prefect's config](/core/concepts/configuration.html).
+The default Prefect logger can be configured by adjusting the settings found in [Prefect's config](/core/concepts/configuration/).
 
 ```toml
 [logging]
@@ -35,7 +35,7 @@ send_flow_run_logs = false
 
 The Prefect logger can be used within tasks but the way it is used depends on the API—functional or imperative—that you choose to write your tasks with.
 
-If using the functional API to declare your tasks using the `@task` decorator then the logger can be instantiated by grabbing it from [context](/core/concepts/execution.html):
+If using the functional API to declare your tasks using the `@task` decorator then the logger can be instantiated by grabbing it from [context](/core/concepts/execution/):
 
 ```python
 @task

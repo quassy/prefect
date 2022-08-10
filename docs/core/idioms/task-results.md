@@ -1,12 +1,13 @@
 # Accessing task results locally
 
-When working on your flows locally Prefect makes it easy to retrieve the [results](/core/concepts/results.html) from your individual tasks in the flow. This is done by grabbing the `.result` attribute from [states](/core/concepts/states.html). Calling `flow.run` returns the flow's final state which can be used to retrieve results from all of the tasks in the flow.
+When working on your flows locally Prefect makes it easy to retrieve the [results](/core/concepts/results/) from your individual tasks in the flow. This is done by grabbing the `.result` attribute from [states](/core/concepts/states/). Calling `flow.run` returns the flow's final state which can be used to retrieve results from all of the tasks in the flow.
 
-!!! warning Local Only
+!!! warning "Local Only"
     This currently does not cover retrieving result values when running in the context of an [API backend](/orchestration/) run using Prefect Core's server or Prefect Cloud.
 
 
 Functional API:
+
 ```python
 from prefect import task, Flow
 
@@ -35,6 +36,7 @@ assert state.result[p].result == None     # task does not return a result
 ```
 
 Imperative API:
+
 ```python
 from prefect import Task, Flow
 

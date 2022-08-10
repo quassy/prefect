@@ -143,10 +143,29 @@ nav:
             - core/development/contributing.md
             - core/development/release-checklist.md
             - core/development/sprints.md
+        - Idioms:
+            - Overview: core/idioms/idioms.md
+            - core/idioms/notifications.md
+            - core/idioms/secrets.md
+            - core/idioms/script-based.md
+            - core/idioms/testing-flows.md
+            - core/idioms/task-run-names.md
+            - core/idioms/conditional.md
+            - core/idioms/mapping.md
+            - core/idioms/parallel.md
+            - core/idioms/targets.md
+            - core/idioms/logging.md
+            - core/idioms/flow-to-flow.md
+            - core/idioms/resource-manager.md
+            - core/idioms/piping.md
+            - core/idioms/task-results.md
+            - core/idioms/pause-for-approval.md
         - FAQ: core/faq.md
         - core/community.md
         - core/code_of_conduct.md
-    - Orchestration: orchestration/README.md
+    - Orchestration: 
+        - Overview: orchestration/README.md
+
     - Task Library:
         - Overview: core/task_library/overview.md
         - Contributing: core/task_library/contributing.md

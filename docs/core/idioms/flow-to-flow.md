@@ -4,8 +4,9 @@ There are many situations where users want to configure dependencies at the flow
 if you have a data preprocessing flow that you maintain separately from a model training flow, and you
 always want to ensure that the preprocessing flow runs before the training flow.
 
-To support this, Prefect provides a convenient [built-in task for creating Flow runs](/api/latest/tasks/prefect.html#create-flow-run)
+To support this, Prefect provides a convenient [built-in task for creating Flow runs](/api-ref/latest/tasks/prefect/#create-flow-run)
 through the Prefect API.  This task supports:
+
 - triggering flow runs when certain conditions are met in another flow
 - providing parameter values that are generated at runtime by another flow
 - constructing a Flow-of-Flows that orchestrates and schedules groups of flows simultaneously
@@ -47,7 +48,7 @@ and reflect the flow run state as the task state. Note that `executor=LocalDaskE
 
 The following example creates the following Flow-of-Flows that runs every weekday:
 
-![Flow of Flows](/idioms/flow-of-flows.png)
+![Flow of Flows](/img/idioms/flow-of-flows.png)
 
 ```python
 from prefect import Flow

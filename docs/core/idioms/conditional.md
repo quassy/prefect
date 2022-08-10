@@ -128,7 +128,7 @@ multiple branches in a flow together.
 
 The resulting flow looks like:
 
-![Flow with conditional branches](/idioms/conditional-branches-merge.png)
+![Flow with conditional branches](/img/idioms/conditional-branches-merge.png)
 
 
 Functional API:

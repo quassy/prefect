@@ -3,7 +3,7 @@
 There are many situations when a workflow contains tasks that require some form of manual approval to continue. Prefect has two built-in mechanisms for achieving this pattern:
 
 - a manual-only trigger that can be configured on a per task basis, and unconditionally prevents the task from running unless a user approves it
-- a [PAUSE](https://docs.prefect.io/api/latest/engine/signals.html#pause) signal that can be raised programmatically when certain conditions are met and also prevents the task from running unless a user approves it
+- a [PAUSE](/api-ref/latest/engine/signals/#pause) signal that can be raised programmatically when certain conditions are met and also prevents the task from running unless a user approves it
 
 Both these mechanisms can only be resumed by an individual or event, either from the Prefect UI or GraphQL API. 
 
@@ -47,9 +47,9 @@ flow.run_agent()
 
 Notification for a paused task
 
-![Notification for Task in Paused State](/idioms/pause_resume_notification.png)
+![Notification for Task in Paused State](/img/idioms/pause_resume_notification.png)
 
 Task ready for approval
 
-![Approval to Resume Task](/idioms/pause_resume_approve.png)
+![Approval to Resume Task](/img/idioms/pause_resume_approve.png)
 

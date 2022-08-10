@@ -15,7 +15,7 @@ script-based storage. All other classes require you to opt-in by passing
 
 ### Example script based workflow
 
-!!! warning GitHub dependency
+!!! warning "GitHub dependency"
     This idiom requires that `git` is installed as well as Prefect's `github` extra dependencies:
 
     ```bash
@@ -24,7 +24,7 @@ script-based storage. All other classes require you to opt-in by passing
 
 
 In this example we will walk through a potential workflow you may use when registering flows with
-[GitHub](/api/latest/storage.html#github) storage. This example takes place in a GitHub
+[GitHub](/api-ref/latest/storage/#github) storage. This example takes place in a GitHub
 repository with the following structure:
 
 ```
@@ -67,7 +67,7 @@ Here's a breakdown of the three kwargs set on the `GitHub` storage:
 - `path`: the location of the flow file in the repo. This must be an exact match to the path of the file.
 - `access_token_secret`: If your flow is stored in a private repo, you'll need
   to provide credentials to access the repo. This takes the name of a
-  [Prefect secret](/core/concepts/secrets.html) which contains a GitHub
+  [Prefect secret](/core/concepts/secrets/) which contains a GitHub
   [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line).
 
 Push this code to the repository:
@@ -96,12 +96,12 @@ The flow is ready to run! Every time you need to change the code inside your flo
 you need to do is commit that code to the same location in the repository and each subsequent run will
 use that code.
 
-!!! warning Flow Structure
+!!! warning "Flow structure"
     If you change any of the structure of your flow such as task names, rearrange task order, etc. then you
     will need to re-register that flow.
 
 
-!!! tip GitLab users
+!!! tip "GitLab users"
     This example applies to GitLab as well. To use GitLab storage, install the `gitlab` extra:
 
     ```bash
@@ -123,7 +123,7 @@ use that code.
     )
     ```
 
-!!! tip Bitbucket users
+!!! tip "Bitbucket users"
     Similarly, to use Bitbucket (Server only) based storage, install the `bitbucket` extra:
 
     ```bash
@@ -147,7 +147,7 @@ use that code.
     ```
 
 
-### Script based Docker storage
+### Script-based Docker storage
 
 ```python
 flow.storage = Docker(
@@ -174,7 +174,7 @@ flow.storage = Docker(
 )
 ```
 
-### Script based cloud storage
+### Script-based cloud storage
 
 Script based storage of flows is also supported for flows stored in S3 and GCS buckets. The following
 snippet shows S3 and GCS storage options where a flow is stored as a script and the `key` points to the
@@ -218,7 +218,7 @@ flow.storage = GCS(
 ```
 
 The script location can also be provided when registering the flow through the
-[`register`](/api/latest/cli/register.html) CLI command through the `--path/-p` option:
+[`register`](/api-ref/latest/cli/register/) CLI command through the `--path/-p` option:
 
 ```bash
 prefect register -p my_flow.py --project MyProject

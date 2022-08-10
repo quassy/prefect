@@ -2,9 +2,9 @@
 
 Prefect supports fully asynchronous / parallel running of a flow's tasks and the preferred method for doing this is using [Dask](https://dask.org/). By connecting to a Dask scheduler, a flow can begin executing its tasks on either local or remote Dask workers. Parallel execution is incredibly useful when executing many mapped tasks simultaneously but for this example you will see a flow that has three pre-defined tasks at the same level that we want to execute asynchronously in order to better visualize it.
 
-![Parallel Tasks](/faq/parallel.png)
+![Parallel Tasks](/img/faq/parallel.png)
 
-This flow takes in a [Parameter](/core/concepts/parameters.html) `stop` and then in three separate tasks it generates random numbers up until that `stop`. Those numbers are then turned into a list and their sum is printed in the final `sum_numbers` task.
+This flow takes in a [Parameter](/core/concepts/parameters/) `stop` and then in three separate tasks it generates random numbers up until that `stop`. Those numbers are then turned into a list and their sum is printed in the final `sum_numbers` task.
 
 Functional API:
 ```python
@@ -67,11 +67,11 @@ sum_numbers.bind(numbers=[number_1, number_2, number_3], flow=flow)
 
 
 By default Prefect uses a
-[LocalExecutor](/api/latest/executors.html#localexecutor) which executes
+[LocalExecutor](/api-ref/latest/executors/#localexecutor) which executes
 tasks serially. However, the above flow could be run in parallel. To enable
 parallelism, you can swap out the executor for either a
-[DaskExecutor](/api/latest/executors.html#daskexecutor) or a
-[LocalDaskExecutor](/api/latest/executors.md#localdaskexecutor) (see
+[DaskExecutor](/api-ref/latest/executors/#daskexecutor) or a
+[LocalDaskExecutor](/api-ref/latest/executors/#localdaskexecutor) (see
 [Choosing an
 Executor](/orchestration/flow_config/executors.html#choosing-an-executor) for
 info on which executor makes sense for your flows).
@@ -96,4 +96,4 @@ if __name__ == "__main__":
 ```
 
 For more information on using Prefect's executors (and Dask) see the
-[Executors docs](/orchestration/flow_config/executors.html#choosing-an-executor).
+[Executors docs](/orchestration/flow_config/executors/#choosing-an-executor).
