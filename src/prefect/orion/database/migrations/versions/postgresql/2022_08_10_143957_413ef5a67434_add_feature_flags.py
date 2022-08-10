@@ -1,19 +1,18 @@
-"""add feature flags
+"""add-feature-flags
 
-Revision ID: e8687e222599
-Revises: 97e212ea6545
-Create Date: 2022-08-04 17:36:19.023686
+Revision ID: 413ef5a67434
+Revises: 60e428f92a75
+Create Date: 2022-08-10 14:39:57.882716
 
 """
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy import Text
 
 import prefect
 
 # revision identifiers, used by Alembic.
-revision = "e8687e222599"
-down_revision = "97e212ea6545"
+revision = "413ef5a67434"
+down_revision = "60e428f92a75"
 branch_labels = None
 depends_on = None
 
@@ -39,23 +38,19 @@ def upgrade():
             server_default=sa.text("CURRENT_TIMESTAMP"),
             nullable=False,
         ),
-        sa.Column(
-            "name",
-            sa.String(),
-            nullable=False,
-        ),
-        sa.Column(
-            "data",
-            prefect.orion.utilities.database.JSON(astext_type=Text()),
-            server_default="{}",
-            nullable=False,
-        ),
+        sa.Column("name", sa.String(), nullable=False),
+        sa.Column("data", sa.JSON(), server_default="{}", nullable=False),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_feature_flag")),
     )
-
-    op.create_index(op.f("ix_feature_flag_name"), "feature_flag", ["name"], unique=True)
+    op.create_index(
+        op.f("ix_feature_flag__name"), "feature_flag", ["name"], unique=True
+    )
+    op.create_index(
+        op.f("ix_feature_flag__updated"), "feature_flag", ["updated"], unique=False
+    )
 
 
 def downgrade():
-    op.drop_index("ix_feature_flag_name", table_name="feature_flag")
+    op.drop_index(op.f("ix_feature_flag__updated"), table_name="feature_flag")
+    op.drop_index(op.f("ix_feature_flag__name"), table_name="feature_flag")
     op.drop_table("feature_flag")
