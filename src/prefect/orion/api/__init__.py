@@ -17,6 +17,7 @@ from . import (
     block_schemas,
     block_types,
     block_capabilities,
+    feature_flags,
     ui,
     root,
     # Server relies on all of the above routes
