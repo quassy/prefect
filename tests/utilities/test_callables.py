@@ -9,6 +9,20 @@ from packaging.version import Version
 from prefect.utilities import callables
 
 
+class TestGetCallDefaults:
+    def test_function_without_defaults(self):
+        def f(a, b, c):
+            pass
+
+        assert callables.get_call_defaults(f) == {}
+
+    def test_function_with_defaults(self):
+        def f(a, b=1, c="hello"):
+            pass
+
+        assert callables.get_call_defaults(f) == {"b": 1, "c": "hello"}
+
+
 class TestFunctionToSchema:
     def test_simple_function_with_no_arguments(self):
         def f():
