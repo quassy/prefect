@@ -49,20 +49,32 @@ class TestReadFeatureFlags:
         assert response.json() == []
 
     async def test_read_feature_flags_with_global_setting_on(
-        self, client, enabled_flag
+        self, client, enabled_flag, disabled_flag
     ):
-        expected_date = enabled_flag.get_meta()["created_date"]
+        expected_enabled_date = enabled_flag.get_meta()["created_date"]
+        expected_disabled_date = disabled_flag.get_meta()["created_date"]
+
         response = await client.get(f"/feature_flags/")
         assert response.status_code == status.HTTP_200_OK
         assert response.json() == [
+            {
+                "name": "disabled_flag",
+                "is_enabled": False,
+                "data": {
+                    "client_data": {},
+                    "created_date": expected_disabled_date,
+                    "conditions": [],
+                    "bucketer": {"type": "NoOpBucketer"},
+                },
+            },
             {
                 "data": {
                     "bucketer": {"type": "NoOpBucketer"},
                     "client_data": {},
                     "conditions": [],
-                    "created_date": expected_date,
+                    "created_date": expected_enabled_date,
                 },
                 "is_enabled": True,
                 "name": "enabled_flag",
-            }
+            },
         ]
