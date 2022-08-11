@@ -39,13 +39,15 @@ def test_creates_missing_flag(
 def test_create_ignores_existing_flag():
     with temporary_settings({PREFECT_FEATURE_FLAGGING_ENABLED: "true"}):
         # Create a disabled flag.
-        flag = create_if_missing("test")
+        flag = create_if_missing("test", is_enabled=False)
         assert flag
         assert flag.name == "test"
+        assert flag.is_enabled() is False
 
         # Try to create the same flag, but enabled -- this should return a
-        # FeatureFlag instance that reports it is disabled.
-        flag = create_if_missing("test")
+        # FeatureFlag instance that reports it is disabled because the
+        # current state of the existing flag (disabled) is honored.
+        flag = create_if_missing("test", is_enabled=True)
         assert flag
         assert flag.is_enabled() is False
 
