@@ -797,19 +797,12 @@ async def create_task_run_then_submit(
     return_type: EngineReturnType,
     task_runner: Optional[BaseTaskRunner],
 ) -> Union[PrefectFuture, State]:
-    task_run = await create_task_run(
-        task=task,
-        flow_run_context=flow_run_context,
-        parameters=parameters,
-        dynamic_key=_dynamic_key_for_task_run(flow_run_context, task),
-        wait_for=wait_for,
-    )
 
     future = await submit_task_run(
         task=task,
+        dynamic_key=_dynamic_key_for_task_run(flow_run_context, task),
         flow_run_context=flow_run_context,
         parameters=parameters,
-        task_run=task_run,
         wait_for=wait_for,
         task_runner=task_runner or flow_run_context.task_runner,
     )
@@ -853,9 +846,9 @@ async def create_task_run(
 
 async def submit_task_run(
     task: Task,
+    dynamic_key: str,
     flow_run_context: FlowRunContext,
     parameters: Dict[str, Any],
-    task_run: TaskRun,
     wait_for: Optional[Iterable[PrefectFuture]],
     task_runner: BaseTaskRunner,
 ) -> PrefectFuture:
@@ -877,7 +870,7 @@ async def submit_task_run(
         run_fn=begin_task_run,
         run_kwargs=dict(
             task=task,
-            task_run=task_run,
+            dynamic_key=dynamic_key,
             parameters=parameters,
             wait_for=wait_for,
             result_filesystem=flow_run_context.result_filesystem,
@@ -897,7 +890,7 @@ async def submit_task_run(
 
 async def begin_task_run(
     task: Task,
-    task_run: TaskRun,
+    dynamic_key: str,
     parameters: Dict[str, Any],
     wait_for: Optional[Iterable[PrefectFuture]],
     result_filesystem: WritableFileSystem,
@@ -955,11 +948,18 @@ async def begin_task_run(
         connect_error = await client.api_healthcheck()
         if connect_error:
             raise RuntimeError(
-                f"Cannot orchestrate task run '{task_run.id}'. "
                 f"Failed to connect to API at {client.api_url}."
             ) from connect_error
 
         try:
+            task_run = await create_task_run(
+                task=task,
+                flow_run_context=flow_run_context,
+                parameters=parameters,
+                dynamic_key=dynamic_key,
+                wait_for=wait_for,
+            )
+
             return await orchestrate_task_run(
                 task=task,
                 task_run=task_run,
