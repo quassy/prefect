@@ -862,11 +862,11 @@ async def submit_task_run(
     logger = get_run_logger(flow_run_context)
 
     if task_runner.concurrency_type == TaskConcurrencyType.SEQUENTIAL:
-        logger.info(f"Executing {task_run.name!r} immediately...")
+        # TODO: USED TO BE TASK RUN NAME NOW IT IS UGLY
+        logger.info(f"Executing {task.name!r} immediately...")
 
     future = await task_runner.submit(
-        task_run=task_run,
-        run_key=f"{task_run.name}-{task_run.id.hex}-{flow_run_context.flow_run.run_count}",
+        run_key=f"{flow_run_context.flow_run.id}-{task.task_key}-{dynamic_key}-{flow_run_context.flow_run.run_count}",
         run_fn=begin_task_run,
         run_kwargs=dict(
             task=task,

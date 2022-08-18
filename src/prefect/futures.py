@@ -104,18 +104,17 @@ class PrefectFuture(Generic[R, A]):
 
     def __init__(
         self,
-        task_run: TaskRun,
         run_key: str,
         task_runner: "BaseTaskRunner",
         asynchronous: A = True,
         _final_state: State[R] = None,  # Exposed for testing
     ) -> None:
-        self.task_run = task_run
         self.run_key = run_key
         self.asynchronous = asynchronous
         self._final_state = _final_state
         self._exception: Optional[Exception] = None
         self._task_runner = task_runner
+        self.task_run = None
 
     @overload
     def wait(
@@ -252,16 +251,15 @@ class PrefectFuture(Generic[R, A]):
 
     @inject_client
     async def _get_state(self, client: OrionClient = None) -> State[R]:
-        assert client is not None  # always injected
+        return await self.wait()
+        # task_run = await client.read_task_run(self.task_run.id)
 
-        task_run = await client.read_task_run(self.task_run.id)
-
-        if not task_run:
-            raise RuntimeError("Future has no associated task run in the server.")
+        # if not task_run:
+            # raise RuntimeError("Future has no associated task run in the server.")
 
         # Update the task run reference
-        self.task_run = task_run
-        return task_run.state
+        # self.task_run = task_run
+        # return task_run.state
 
     def __hash__(self) -> int:
         return hash(self.run_key)

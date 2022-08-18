@@ -112,11 +112,11 @@ class BaseTaskRunner(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     async def submit(
         self,
-        task_run: TaskRun,
         run_key: str,
         run_fn: Callable[..., Awaitable[State[R]]],
         run_kwargs: Dict[str, Any],
         asynchronous: A = True,
+        task_run: Optional[TaskRun] = None,
     ) -> PrefectFuture[R, A]:
         """
         Submit a call for execution and return a `PrefectFuture` that can be used to
@@ -286,7 +286,7 @@ class ConcurrentTaskRunner(BaseTaskRunner):
         self._run_keys.add(run_key)
 
         return PrefectFuture(
-            task_run=task_run,
+            #task_run=task_run_future,
             run_key=run_key,
             task_runner=self,
             asynchronous=asynchronous,
