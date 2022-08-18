@@ -869,11 +869,11 @@ async def submit_task_run(
         run_key=f"{task.task_key}-{flow_run_context.flow_run.id}-{dynamic_key}-{flow_run_context.flow_run.run_count}",
         create_fn=create_task_run,
         create_kwargs=dict(
-                task=task,
-                flow_run_context=flow_run_context,
-                parameters=parameters,
-                dynamic_key=dynamic_key,
-                wait_for=wait_for,
+            task=task,
+            flow_run_context=flow_run_context,
+            parameters=parameters,
+            dynamic_key=dynamic_key,
+            wait_for=wait_for,
         ),
         run_fn=begin_task_run,
         run_kwargs=dict(
@@ -962,14 +962,14 @@ async def begin_task_run(
 
         try:
             return await orchestrate_task_run(
-                    task=task,
-                    task_run=task_run,
-                    parameters=parameters,
-                    wait_for=wait_for,
-                    result_filesystem=result_filesystem,
-                    interruptible=interruptible,
-                    client=client,
-                )
+                task=task,
+                task_run=task_run,
+                parameters=parameters,
+                wait_for=wait_for,
+                result_filesystem=result_filesystem,
+                interruptible=interruptible,
+                client=client,
+            )
         except Abort:
             # Task run already completed, just fetch its state
             task_run = await client.read_task_run(task_run.id)
@@ -1152,21 +1152,20 @@ async def wait_for_task_runs_and_report_crashes(
     states = await gather(*(future._wait for future in task_run_futures))
 
     for future, state in zip(task_run_futures, states):
-        # TODO - fix logging
-        # logger = task_run_logger(future.task_run)
-        breakpoint()
+        # TODO - handle if future has no task run
+        logger = task_run_logger(future.task_run)
 
         if not state.type == StateType.CRASHED:
             continue
 
         exception = state.result(raise_on_failure=False)
 
-        # logger.info(f"Crash detected! {state.message}")
-        # logger.debug("Crash details:", exc_info=exception)
+        logger.info(f"Crash detected! {state.message}")
+        logger.debug("Crash details:", exc_info=exception)
 
         # Update the state of the task run
         result = await client.set_task_run_state(
-            task_run_id=state.state_details.task_run_id, state=state, force=True
+            task_run_id=future.task_run.id, state=state, force=True
         )
         if result.status == SetStateStatus.ACCEPT:
             engine_logger.debug(

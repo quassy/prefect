@@ -4,7 +4,6 @@ Futures represent the execution of a task and allow retrieval of the task run's 
 This module contains the definition for futures as well as utilities for resolving
 futures in nested data structures.
 """
-import asyncio
 import warnings
 from typing import (
     TYPE_CHECKING,
@@ -29,7 +28,6 @@ from prefect.utilities.asyncutils import (
     run_async_from_worker_thread,
     run_sync_in_worker_thread,
     sync,
-    sync_compatible,
 )
 from prefect.utilities.collections import visit_collection
 
@@ -106,7 +104,6 @@ class PrefectFuture(Generic[R, A]):
 
     def __init__(
         self,
-        task_run_future: asyncio.Future,
         run_key: str,
         task_runner: "BaseTaskRunner",
         asynchronous: A = True,

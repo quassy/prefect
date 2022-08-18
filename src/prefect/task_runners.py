@@ -195,7 +195,7 @@ class SequentialTaskRunner(BaseTaskRunner):
 
     def __init__(self) -> None:
         super().__init__()
-        self._runs: Dict[str, State] = dict()
+        self._runs: Dict[str, TaskRun] = dict()
         self._results: Dict[str, State] = dict()
 
     @property
@@ -206,7 +206,7 @@ class SequentialTaskRunner(BaseTaskRunner):
         self,
         task_run: TaskRun,
         run_key: str,
-        create_fn: Callable[..., Awaitable[TaskRun[R]]],
+        create_fn: Callable[..., Awaitable[TaskRun]],
         create_kwargs: Dict[str, Any],
         run_fn: Callable[..., Awaitable[State[R]]],
         run_kwargs: Dict[str, Any],
@@ -255,7 +255,8 @@ class ConcurrentTaskRunner(BaseTaskRunner):
 
         # Runtime attributes
         self._task_group: TaskGroup = None
-        self._results: Dict[UUID, Any] = dict()
+        self._results: Dict[str, Any] = dict()
+        self._runs: Dict[str, TaskRun] = dict()
         self._run_keys: Set[UUID] = set()
         super().__init__()
 
@@ -266,7 +267,7 @@ class ConcurrentTaskRunner(BaseTaskRunner):
     async def submit(
         self,
         run_key: str,
-        create_fn: Callable[..., Awaitable[TaskRun[R]]],
+        create_fn: Callable[..., Awaitable[TaskRun]],
         create_kwargs: Dict[str, Any],
         run_fn: Callable[..., Awaitable[State[R]]],
         run_kwargs: Dict[str, Any],
@@ -285,7 +286,12 @@ class ConcurrentTaskRunner(BaseTaskRunner):
 
         # Rely on the event loop for concurrency
         self._task_group.start_soon(
-            self._run_and_store_result, run_key, run_fn, run_kwargs
+            self._run_and_store_result,
+            run_key,
+            create_fn,
+            create_kwargs,
+            run_fn,
+            run_kwargs,
         )
 
         # Track the keys so we can ensure to gather them later
@@ -310,7 +316,9 @@ class ConcurrentTaskRunner(BaseTaskRunner):
 
         return await self._get_run_result(prefect_future.run_key, timeout)
 
-    async def _run_and_store_result(self, run_key: str, create_fn, create_kwargs, run_fn, run_kwargs):
+    async def _run_and_store_result(
+        self, run_key: str, create_fn, create_kwargs, run_fn, run_kwargs
+    ):
         """
         Simple utility to store the orchestration result in memory on completion
 
@@ -319,7 +327,9 @@ class ConcurrentTaskRunner(BaseTaskRunner):
         """
         try:
             self._runs[run_key] = await create_fn(**create_kwargs)
-            self._results[run_key] = await run_fn(**run_kwargs, task_run=self._runs[run_key])
+            self._results[run_key] = await run_fn(
+                **run_kwargs, task_run=self._runs[run_key]
+            )
         except BaseException as exc:
             self._results[run_key] = exception_to_crashed_state(exc)
 
