@@ -865,6 +865,15 @@ async def submit_task_run(
         # TODO: USED TO BE TASK RUN NAME NOW IT IS UGLY
         logger.info(f"Executing {task.name!r} immediately...")
 
+    # create a future that will resolve to the TaskRun object after creation
+    # Get the current event loop.
+    import asyncio
+
+    loop = asyncio.get_running_loop()
+
+    # Create a new Future object.
+    fut = loop.create_future()
+
     future = await task_runner.submit(
         run_key=f"{flow_run_context.flow_run.id}-{task.task_key}-{dynamic_key}-{flow_run_context.flow_run.run_count}",
         run_fn=begin_task_run,
@@ -875,6 +884,7 @@ async def submit_task_run(
             wait_for=wait_for,
             result_filesystem=flow_run_context.result_filesystem,
             settings=prefect.context.SettingsContext.get().copy(),
+            task_run_future=fut,
         ),
         asynchronous=task.isasync and flow_run_context.flow.isasync,
     )
@@ -896,6 +906,7 @@ async def begin_task_run(
     wait_for: Optional[Iterable[PrefectFuture]],
     result_filesystem: WritableFileSystem,
     settings: prefect.context.SettingsContext,
+    task_run_future=None,
 ):
     """
     Entrypoint for task run execution.
@@ -959,6 +970,7 @@ async def begin_task_run(
                 parameters=parameters,
                 dynamic_key=dynamic_key,
                 wait_for=wait_for,
+                task_run_future=task_run_future,
             )
 
             return await orchestrate_task_run(
@@ -1154,6 +1166,7 @@ async def wait_for_task_runs_and_report_crashes(
     for future, state in zip(task_run_futures, states):
         # TODO - fix logging
         # logger = task_run_logger(future.task_run)
+        breakpoint()
 
         if not state.type == StateType.CRASHED:
             continue
