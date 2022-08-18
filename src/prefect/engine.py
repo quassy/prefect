@@ -880,7 +880,8 @@ async def submit_task_run(
     )
 
     if task_runner.concurrency_type != TaskConcurrencyType.SEQUENTIAL:
-        logger.info(f"Submitted task run {task_run.name!r} for execution.")
+        # TODO: USED TO BE TASK RUN NAME NOW IT IS UGLY
+        logger.info(f"Submitted task run {task.name!r} for execution.")
 
     # Track the task run future in the flow run context
     flow_run_context.task_run_futures.append(future)
@@ -1151,19 +1152,20 @@ async def wait_for_task_runs_and_report_crashes(
     states = await gather(*(future._wait for future in task_run_futures))
 
     for future, state in zip(task_run_futures, states):
-        logger = task_run_logger(future.task_run)
+        # TODO - fix logging
+        # logger = task_run_logger(future.task_run)
 
         if not state.type == StateType.CRASHED:
             continue
 
         exception = state.result(raise_on_failure=False)
 
-        logger.info(f"Crash detected! {state.message}")
-        logger.debug("Crash details:", exc_info=exception)
+        # logger.info(f"Crash detected! {state.message}")
+        # logger.debug("Crash details:", exc_info=exception)
 
         # Update the state of the task run
         result = await client.set_task_run_state(
-            task_run_id=future.task_run.id, state=state, force=True
+            task_run_id=state.state_details.task_run_id, state=state, force=True
         )
         if result.status == SetStateStatus.ACCEPT:
             engine_logger.debug(

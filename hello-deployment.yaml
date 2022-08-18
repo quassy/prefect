@@ -1,0 +1,41 @@
+###
+### A complete description of a Prefect Deployment for flow 'hello'
+###
+name: process
+description: null
+version: 7fc5f41f03f3cfedba8e10092ff2b7f7
+# The work queue that will handle this deployment's runs
+work_queue_name: prod
+tags: []
+parameters: {}
+schedule: null
+infra_overrides: {}
+infrastructure:
+  type: process
+  env: {}
+  labels: {}
+  name: null
+  command:
+  - python
+  - -m
+  - prefect.engine
+  stream_output: true
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: hello
+manifest_path: null
+storage: null
+path: /Users/zach/prefect/prefect
+entrypoint: repro3.py:hello
+parameter_openapi_schema:
+  title: Parameters
+  type: object
+  properties:
+    user:
+      title: user
+      default: Marvin
+      type: string
+  required: null
+  definitions: null
