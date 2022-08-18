@@ -865,26 +865,23 @@ async def submit_task_run(
         # TODO: USED TO BE TASK RUN NAME NOW IT IS UGLY
         logger.info(f"Executing {task.name!r} immediately...")
 
-    # create a future that will resolve to the TaskRun object after creation
-    # Get the current event loop.
-    import asyncio
-
-    loop = asyncio.get_running_loop()
-
-    # Create a new Future object.
-    fut = loop.create_future()
-
     future = await task_runner.submit(
-        run_key=f"{flow_run_context.flow_run.id}-{task.task_key}-{dynamic_key}-{flow_run_context.flow_run.run_count}",
+        run_key=f"{task.task_key}-{flow_run_context.flow_run.id}-{dynamic_key}-{flow_run_context.flow_run.run_count}",
+        create_fn=create_task_run,
+        create_kwargs=dict(
+                task=task,
+                flow_run_context=flow_run_context,
+                parameters=parameters,
+                dynamic_key=dynamic_key,
+                wait_for=wait_for,
+        ),
         run_fn=begin_task_run,
         run_kwargs=dict(
             task=task,
-            dynamic_key=dynamic_key,
             parameters=parameters,
             wait_for=wait_for,
             result_filesystem=flow_run_context.result_filesystem,
             settings=prefect.context.SettingsContext.get().copy(),
-            task_run_future=fut,
         ),
         asynchronous=task.isasync and flow_run_context.flow.isasync,
     )
@@ -901,7 +898,7 @@ async def submit_task_run(
 
 async def begin_task_run(
     task: Task,
-    dynamic_key: str,
+    task_run: TaskRun,
     parameters: Dict[str, Any],
     wait_for: Optional[Iterable[PrefectFuture]],
     result_filesystem: WritableFileSystem,
@@ -964,24 +961,15 @@ async def begin_task_run(
             ) from connect_error
 
         try:
-            task_run = await create_task_run(
-                task=task,
-                flow_run_context=flow_run_context,
-                parameters=parameters,
-                dynamic_key=dynamic_key,
-                wait_for=wait_for,
-                task_run_future=task_run_future,
-            )
-
             return await orchestrate_task_run(
-                task=task,
-                task_run=task_run,
-                parameters=parameters,
-                wait_for=wait_for,
-                result_filesystem=result_filesystem,
-                interruptible=interruptible,
-                client=client,
-            )
+                    task=task,
+                    task_run=task_run,
+                    parameters=parameters,
+                    wait_for=wait_for,
+                    result_filesystem=result_filesystem,
+                    interruptible=interruptible,
+                    client=client,
+                )
         except Abort:
             # Task run already completed, just fetch its state
             task_run = await client.read_task_run(task_run.id)

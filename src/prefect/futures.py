@@ -117,7 +117,6 @@ class PrefectFuture(Generic[R, A]):
         self._final_state = _final_state
         self._exception: Optional[Exception] = None
         self._task_runner = task_runner
-        self.task_run = None
 
     @overload
     def wait(
@@ -254,7 +253,6 @@ class PrefectFuture(Generic[R, A]):
 
     @inject_client
     async def _get_state(self, client: OrionClient = None) -> State[R]:
-        # return await self.wait()
         task_run = await client.read_task_run(self.task_run.id)
 
         if not task_run:
@@ -265,12 +263,12 @@ class PrefectFuture(Generic[R, A]):
         return task_run.state
 
     @property
-    @sync_compatible
-    async def task_run(self) -> TaskRun:
+    def task_run(self) -> TaskRun:
         """
         The task run associated with this future.
         """
-        return await self.task_run_future
+        # TODO - probably should be task runner's responsiblity
+        return self._task_runner._runs.get(self.run_key)
 
     def __hash__(self) -> int:
         return hash(self.run_key)
