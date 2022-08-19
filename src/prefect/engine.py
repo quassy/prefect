@@ -903,7 +903,6 @@ async def begin_task_run(
     wait_for: Optional[Iterable[PrefectFuture]],
     result_filesystem: WritableFileSystem,
     settings: prefect.context.SettingsContext,
-    task_run_future=None,
 ):
     """
     Entrypoint for task run execution.
