@@ -687,7 +687,7 @@ def enter_task_run_engine(
         raise TimeoutError("Flow run timed out")
 
     begin_run = partial(
-        begin_task_map if mapped else create_task_run_then_submit,
+        begin_task_map if mapped else submit_task_run,
         task=task,
         flow_run_context=flow_run_context,
         parameters=parameters,
@@ -743,7 +743,7 @@ async def begin_task_map(
         call_parameters = {key: value[i] for key, value in parameters.items()}
         task_runs.append(
             partial(
-                create_task_run_then_submit,
+                submit_task_run,
                 task=task,
                 flow_run_context=flow_run_context,
                 parameters=call_parameters,
@@ -789,23 +789,55 @@ def collect_task_run_inputs(
     return inputs
 
 
-async def create_task_run_then_submit(
+async def submit_task_run(
     task: Task,
     flow_run_context: FlowRunContext,
     parameters: Dict[str, Any],
     wait_for: Optional[Iterable[PrefectFuture]],
     return_type: EngineReturnType,
-    task_runner: Optional[BaseTaskRunner],
-) -> Union[PrefectFuture, State]:
+    task_runner: BaseTaskRunner,
+) -> PrefectFuture:
+    """
+    Async entrypoint for task calls.
 
-    future = await submit_task_run(
-        task=task,
-        dynamic_key=_dynamic_key_for_task_run(flow_run_context, task),
-        flow_run_context=flow_run_context,
-        parameters=parameters,
-        wait_for=wait_for,
-        task_runner=task_runner or flow_run_context.task_runner,
+    Tasks must be called within a flow. When tasks are called, they submit a task to
+    the flow run's task runner which creates then orchetrates the task run. The task
+    runner returns a future that is returned immediately.
+    """
+    dynamic_key = _dynamic_key_for_task_run(flow_run_context, task)
+    logger = get_run_logger(flow_run_context)
+
+    if task_runner.concurrency_type == TaskConcurrencyType.SEQUENTIAL:
+        # TODO: USED TO BE TASK RUN NAME NOW IT IS UGLY
+        logger.info(f"Executing {task.name!r} immediately...")
+
+    future = await task_runner.submit(
+        run_key=f"{task.task_key}-{flow_run_context.flow_run.id}-{dynamic_key}-{flow_run_context.flow_run.run_count}",
+        create_fn=create_task_run,
+        create_kwargs=dict(
+            task=task,
+            flow_run_context=flow_run_context,
+            parameters=parameters,
+            dynamic_key=dynamic_key,
+            wait_for=wait_for,
+        ),
+        run_fn=begin_task_run,
+        run_kwargs=dict(
+            task=task,
+            parameters=parameters,
+            wait_for=wait_for,
+            result_filesystem=flow_run_context.result_filesystem,
+            settings=prefect.context.SettingsContext.get().copy(),
+        ),
+        asynchronous=task.isasync and flow_run_context.flow.isasync,
     )
+
+    if task_runner.concurrency_type != TaskConcurrencyType.SEQUENTIAL:
+        # TODO: USED TO BE TASK RUN NAME NOW IT IS UGLY
+        logger.info(f"Submitted task run {task.name!r} for execution.")
+
+    # Track the task run future in the flow run context
+    flow_run_context.task_run_futures.append(future)
 
     if return_type == "future":
         return future
@@ -842,58 +874,6 @@ async def create_task_run(
     logger.info(f"Created task run {task_run.name!r} for task {task.name!r}")
 
     return task_run
-
-
-async def submit_task_run(
-    task: Task,
-    dynamic_key: str,
-    flow_run_context: FlowRunContext,
-    parameters: Dict[str, Any],
-    wait_for: Optional[Iterable[PrefectFuture]],
-    task_runner: BaseTaskRunner,
-) -> PrefectFuture:
-    """
-    Async entrypoint for task calls.
-
-    Tasks must be called within a flow. When tasks are called, they create a task run
-    and submit orchestration of the run to the flow run's task runner. The task runner
-    returns a future that is returned immediately.
-    """
-    logger = get_run_logger(flow_run_context)
-
-    if task_runner.concurrency_type == TaskConcurrencyType.SEQUENTIAL:
-        # TODO: USED TO BE TASK RUN NAME NOW IT IS UGLY
-        logger.info(f"Executing {task.name!r} immediately...")
-
-    future = await task_runner.submit(
-        run_key=f"{task.task_key}-{flow_run_context.flow_run.id}-{dynamic_key}-{flow_run_context.flow_run.run_count}",
-        create_fn=create_task_run,
-        create_kwargs=dict(
-            task=task,
-            flow_run_context=flow_run_context,
-            parameters=parameters,
-            dynamic_key=dynamic_key,
-            wait_for=wait_for,
-        ),
-        run_fn=begin_task_run,
-        run_kwargs=dict(
-            task=task,
-            parameters=parameters,
-            wait_for=wait_for,
-            result_filesystem=flow_run_context.result_filesystem,
-            settings=prefect.context.SettingsContext.get().copy(),
-        ),
-        asynchronous=task.isasync and flow_run_context.flow.isasync,
-    )
-
-    if task_runner.concurrency_type != TaskConcurrencyType.SEQUENTIAL:
-        # TODO: USED TO BE TASK RUN NAME NOW IT IS UGLY
-        logger.info(f"Submitted task run {task.name!r} for execution.")
-
-    # Track the task run future in the flow run context
-    flow_run_context.task_run_futures.append(future)
-
-    return future
 
 
 async def begin_task_run(
