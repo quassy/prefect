@@ -1151,7 +1151,6 @@ async def wait_for_task_runs_and_report_crashes(
     states = await gather(*(future._wait for future in task_run_futures))
 
     for future, state in zip(task_run_futures, states):
-        # TODO - handle if future has no task run
         logger = task_run_logger(future.task_run)
 
         if not state.type == StateType.CRASHED:
