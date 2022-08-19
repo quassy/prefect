@@ -113,21 +113,26 @@ class BaseTaskRunner(metaclass=abc.ABCMeta):
     async def submit(
         self,
         run_key: str,
+        create_fn: Callable[..., Awaitable[TaskRun]],
+        create_kwargs: Dict[str, Any],
         run_fn: Callable[..., Awaitable[State[R]]],
         run_kwargs: Dict[str, Any],
         asynchronous: A = True,
-        task_run: Optional[TaskRun] = None,
     ) -> PrefectFuture[R, A]:
         """
         Submit a call for execution and return a `PrefectFuture` that can be used to
         get the call result.
 
         Args:
-            task_run: The task run being submitted.
-            task_key: A unique key for this orchestration run of the task. Can be used
+            run_key: A unique key for this orchestration run of the task. Can be used
                 for caching.
+            create_fn: A callable that creates the task run. The task run will be
+                created after being submitted to the task runner to avoid blocking
+                flow execution.
+            create_kwargs: Keyword arguments to pass to the `create_fn`.
             run_fn: The function to be executed
             run_kwargs: A dict of keyword arguments to pass to `run_fn`
+            asynchronous: Whether or not the task execution is asynchronous.
 
         Returns:
             A future representing the result of `run_fn` execution
@@ -204,7 +209,6 @@ class SequentialTaskRunner(BaseTaskRunner):
 
     async def submit(
         self,
-        task_run: TaskRun,
         run_key: str,
         create_fn: Callable[..., Awaitable[TaskRun]],
         create_kwargs: Dict[str, Any],
@@ -215,6 +219,7 @@ class SequentialTaskRunner(BaseTaskRunner):
         # Run the function immediately and store the result in memory
         try:
             task_run = await create_fn(**create_kwargs)
+            self.logger.info(f"Executing {task_run.name!r} immediately...")
             result = await run_fn(**run_kwargs)
         except BaseException as exc:
             # TODO: try to return task run even if the run_fn crashes
