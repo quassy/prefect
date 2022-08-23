@@ -161,6 +161,44 @@ class Block(BaseModel, ABC):
                                     field.name
                                 ] = type_._to_block_schema_reference_dict()
 
+    class Docstring:
+        def __init__(self, doc):
+            self.parsed_docstring = self._parse_docstring(doc)
+
+        def _parse_docstring(self, doc) -> List[DocstringSection]:
+            """
+            Parses the docstring into list of DocstringSection objects.
+            Helper method used primarily to suppress irrelevant logs, e.g.
+            `<module>:11: No type or annotation for parameter 'write_json'`
+            because griffe is unable to parse the types from pydantic.BaseModel.
+            """
+            griffe_logger = logging.getLogger("griffe.docstrings.google")
+            docstring = Docstring(doc)
+            parsed_docstring = parse(docstring, Parser.google)
+            griffe_logger.disabled = True
+            griffe_logger.disabled = False
+            return parsed_docstring
+
+        def get_attr_description(self, attr_name):
+            """
+            Gets the attribute description from docstring.
+            """
+            print(self.parsed_docstring[0].value)
+            parsed_attrs = next(
+                (
+                    section.as_dict().get("value")
+                    for section in self.parsed_docstring
+                    if section.kind == DocstringSectionKind.attributes
+                ),
+                None,
+            )
+            description = next(
+                (attr.description for attr in parsed_attrs if attr.name == attr_name),
+                [],
+            )
+            print(description)
+            return description
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.block_initialization()
@@ -170,6 +208,8 @@ class Block(BaseModel, ABC):
 
     # -- private class variables
     # set by the class itself
+    _inherited_doc = __doc__
+    _docstring = Docstring
 
     # Attribute to customize the name of the block type created
     # when the block is registered with Orion. If not set, block
@@ -191,6 +231,21 @@ class Block(BaseModel, ABC):
     _block_document_id: Optional[UUID] = None
     _block_document_name: Optional[str] = None
     _is_anonymous: Optional[bool] = None
+
+    @classmethod
+    def _parse_docstring(cls) -> List[DocstringSection]:
+        """
+        Parses the docstring into list of DocstringSection objects.
+        Helper method used primarily to suppress irrelevant logs, e.g.
+        `<module>:11: No type or annotation for parameter 'write_json'`
+        because griffe is unable to parse the types from pydantic.BaseModel.
+        """
+        griffe_logger = logging.getLogger("griffe.docstrings.google")
+        docstring = Docstring(cls.__doc__)
+        parsed_docstring = parse(docstring, Parser.google)
+        griffe_logger.disabled = True
+        griffe_logger.disabled = False
+        return parsed_docstring
 
     @classmethod
     def __dispatch_key__(cls):
@@ -352,21 +407,6 @@ class Block(BaseModel, ABC):
             block_type=cls._to_block_type(),
             capabilities=list(cls.get_block_capabilities()),
         )
-
-    @classmethod
-    def _parse_docstring(cls) -> List[DocstringSection]:
-        """
-        Parses the docstring into list of DocstringSection objects.
-        Helper method used primarily to suppress irrelevant logs, e.g.
-        `<module>:11: No type or annotation for parameter 'write_json'`
-        because griffe is unable to parse the types from pydantic.BaseModel.
-        """
-        griffe_logger = logging.getLogger("griffe.docstrings.google")
-        griffe_logger.disabled = True
-        docstring = Docstring(cls.__doc__)
-        parsed = parse(docstring, Parser.google)
-        griffe_logger.disabled = False
-        return parsed
 
     @classmethod
     def get_description(cls) -> Optional[str]:
