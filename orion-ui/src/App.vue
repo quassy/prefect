@@ -45,7 +45,6 @@
     flowRouteKey,
     flowRunCreateRouteKey,
     flowRunRouteKey,
-    flowRunsApiKey,
     flowRunsRouteKey,
     flowsApiKey,
     flowsRouteKey,
@@ -58,7 +57,19 @@
     workQueueCreateRouteKey,
     workQueueRouteKey,
     workQueuesApiKey,
-    workQueuesRouteKey
+    workQueuesRouteKey,
+    getFlowRunKey,
+    getFlowRunsKey,
+    getFlowRunsCountKey,
+    getFlowRunsHistoryKey,
+    getFlowRunsGraphKey,
+    deleteFlowRunKey,
+    getFlowRun,
+    getFlowRuns,
+    getFlowRunsCount,
+    getFlowRunsHistory,
+    getFlowRunsGraph,
+    deleteFlowRun
   } from '@prefecthq/orion-design'
   import { PGlobalSidebar, PIcon, media } from '@prefecthq/prefect-design'
   import { computed, provide, ref, watchEffect } from 'vue'
@@ -66,23 +77,31 @@
   import { blockSchemasApi } from './services/blockSchemasApi'
   import { blockTypesApi } from './services/blockTypesApi'
   import { notificationsApi } from './services/notificationsApi'
+  import { UiSettings } from './services/uiSettings'
   import ContextSidebar from '@/components/ContextSidebar.vue'
   import { routes } from '@/router/routes'
   import { blockCapabilitiesApi } from '@/services/blockCapabilitiesApi'
   import { deploymentsApi } from '@/services/deploymentsApi'
-  import { flowRunsApi } from '@/services/flowRunsApi'
   import { flowsApi } from '@/services/flowsApi'
   import { logsApi } from '@/services/logsApi'
   import { taskRunsApi } from '@/services/taskRunsApi'
   import { workQueuesApi } from '@/services/workQueuesApi'
   import { can } from '@/utilities/permissions'
 
+  provide('serverKey', UiSettings.get('apiUrl'))
+
+  provide(getFlowRunKey, getFlowRun)
+  provide(getFlowRunsKey, getFlowRuns)
+  provide(getFlowRunsCountKey, getFlowRunsCount)
+  provide(getFlowRunsHistoryKey, getFlowRunsHistory)
+  provide(getFlowRunsGraphKey, getFlowRunsGraph)
+  provide(deleteFlowRunKey, deleteFlowRun)
+
   provide(blockCapabilitiesApiKey, blockCapabilitiesApi)
   provide(blockDocumentsApiKey, blockDocumentsApi)
   provide(blockSchemasApiKey, blockSchemasApi)
   provide(blockTypesApiKey, blockTypesApi)
   provide(deploymentsApiKey, deploymentsApi)
-  provide(flowRunsApiKey, flowRunsApi)
   provide(flowsApiKey, flowsApi)
   provide(logsApiKey, logsApi)
   provide(taskRunsApiKey, taskRunsApi)

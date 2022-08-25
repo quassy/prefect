@@ -67,6 +67,7 @@
     FlowRunLogs,
     FlowRunTaskRuns,
     FlowRunSubFlows,
+    getFlowRun,
     JsonView
   } from '@prefecthq/orion-design'
   import { PDivider, media } from '@prefecthq/prefect-design'
@@ -74,7 +75,6 @@
   import { computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { routes } from '@/router'
-  import { flowRunsApi } from '@/services/flowRunsApi'
 
   const router = useRouter()
   const flowRunId = useRouteParam('id')
@@ -89,7 +89,7 @@
     return values
   })
 
-  const flowRunDetailsSubscription = useSubscription(flowRunsApi.getFlowRun, [flowRunId], { interval: 5000 })
+  const flowRunDetailsSubscription = useSubscription(getFlowRun, [flowRunId], { interval: 5000 })
   const flowRun = computed(() => flowRunDetailsSubscription.response)
 
   const parameters = computed(() => {
