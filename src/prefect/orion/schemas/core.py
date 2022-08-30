@@ -479,6 +479,10 @@ class BlockType(ORMBaseModel):
     is_protected: bool = Field(
         False, description="Protected block types cannot be modified via API."
     )
+    is_available_server_side: bool = Field(
+        False,
+        description="Indicates whether a corresponding block subclass is available on the Orion server.",
+    )
 
     @validator("name", check_fields=False)
     def validate_name_characters(cls, v):

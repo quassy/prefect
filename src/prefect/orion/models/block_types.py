@@ -8,10 +8,12 @@ from uuid import UUID
 
 import sqlalchemy as sa
 
+from prefect.blocks.core import Block
 from prefect.orion import schemas
 from prefect.orion.database.dependencies import inject_db
 from prefect.orion.database.interface import OrionDBInterface
 from prefect.orion.database.orm_models import ORMBlockType
+from prefect.utilities.dispatch import lookup_type
 
 
 @inject_db
@@ -80,7 +82,10 @@ async def read_block_type(
     Returns:
         db.BlockType: an ORM block type model
     """
-    return await session.get(db.BlockType, block_type_id)
+    block_type = await session.get(db.BlockType, block_type_id)
+    if block_type is not None:
+        block_type.is_available_server_side = lookup_type(Block, block_type.slug)
+    return block_type
 
 
 @inject_db
@@ -101,7 +106,10 @@ async def read_block_type_by_slug(
     result = await session.execute(
         sa.select(db.BlockType).where(db.BlockType.slug == block_type_slug)
     )
-    return result.scalar()
+    block_type = result.scalar()
+    if block_type is not None:
+        block_type.is_available_server_side = lookup_type(Block, block_type.slug)
+    return block_type
 
 
 @inject_db
@@ -140,7 +148,10 @@ async def read_block_types(
         query = query.limit(limit)
 
     result = await session.execute(query)
-    return result.scalars().unique().all()
+    block_types = result.scalars().unique().all()
+    for block_type in block_types:
+        block_type.is_available_server_side = lookup_type(Block, block_type.slug)
+    return block_types
 
 
 @inject_db
