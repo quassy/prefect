@@ -750,6 +750,11 @@ async def begin_task_map(
 ) -> List[Union[PrefectFuture, Awaitable[PrefectFuture]]]:
     """Async entrypoint for task mapping"""
 
+    # Preserve task dependencies to futures passed as parameters,
+    # as when they are resolved the relationship will be lost.
+    wait_for = [] if wait_for is None else wait_for
+    wait_for.extend([x for x in parameters.values() if isinstance(x, PrefectFuture)])
+
     # Resolve any futures / states that are in the parameters as we need to
     # validate the lengths of those values before proceeding.
     parameters.update(await resolve_inputs(parameters))

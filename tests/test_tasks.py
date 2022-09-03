@@ -15,6 +15,7 @@ from prefect.exceptions import (
     ReservedArgumentError,
 )
 from prefect.futures import PrefectFuture
+from prefect.orion import models
 from prefect.orion.schemas.core import TaskRunResult
 from prefect.orion.schemas.data import DataDocument
 from prefect.orion.schemas.states import State, StateType
@@ -1947,6 +1948,33 @@ class TestTaskMap:
 
         futures = my_flow()
         assert [future.result() for future in futures] == [2, 3, 4]
+
+    async def test_map_preserves_dependencies_between_futures(self, session):
+        @task
+        def some_numbers():
+            return [1, 2, 3]
+
+        @flow
+        def my_flow():
+            numbers_future = some_numbers.submit()
+            return numbers_future, TestTaskMap.add_one.map(numbers_future)
+
+        numbers_future, add_one_futures = my_flow()
+
+        graph = await models.flow_runs.read_task_run_dependencies(
+            session=session, flow_run_id=numbers_future.state_details.flow_run_id
+        )
+
+        dependency_ids = {
+            x["id"]: [d.id for d in x["upstream_dependencies"]] for x in graph
+        }
+
+        assert dependency_ids[numbers_future.state_details.task_run_id] == []
+        assert all(
+            dependency_ids[x.state_details.task_run_id]
+            == [numbers_future.state_details.task_run_id]
+            for x in add_one_futures
+        )
 
     def test_map_can_take_flow_state_as_input(self):
         @flow
