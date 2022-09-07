@@ -1,8 +1,10 @@
 """
 Base `prefect` command-line application
 """
+import io
 import platform
 import sys
+from pathlib import Path
 from typing import Optional
 
 import pendulum
@@ -12,11 +14,14 @@ import typer.core
 
 import prefect
 import prefect.context
+import prefect.orion.schemas as schemas
 import prefect.settings
+from prefect import get_client
 from prefect.cli._types import PrefectTyper
 from prefect.cli._utilities import with_cli_exception_handling
 from prefect.logging.configuration import setup_logging
 from prefect.settings import PREFECT_CLI_COLORS, PREFECT_CLI_WRAP_LINES
+from prefect.utilities.processutils import run_process
 
 app = PrefectTyper(add_completion=False, no_args_is_help=True)
 
@@ -133,3 +138,30 @@ async def version():
             app.console.print(f"{prefix}{key.ljust(20 - len(prefix))} {value}")
 
     display(version_info)
+
+
+@app.command()
+async def run(script: str):
+    client = get_client()
+    script_name = str(Path(script).with_suffix(""))
+
+    fake_flow = prefect.flow(lambda: None, name=script_name)
+    flow_run = await client.create_flow_run(fake_flow, state=schemas.states.Running())
+
+    cmd = f"python {script}"
+    err_stream = io.StringIO()
+    out_stream = io.StringIO()
+    process = await run_process(cmd, stream_output=(out_stream, err_stream))
+
+    if process.returncode != 0:
+        err_stream.seek(0)
+        msg = err_stream.read()
+        await client.set_flow_run_state(
+            flow_run.id, state=schemas.states.Failed(message=msg)
+        )
+        raise OSError(f"Failed to pull from remote:\n {msg}")
+    else:
+        out_stream.seek(0)
+        await client.set_flow_run_state(
+            flow_run.id, state=schemas.states.Completed(message=out_stream.read())
+        )
