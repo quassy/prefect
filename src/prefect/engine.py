@@ -65,7 +65,7 @@ from prefect.logging.loggers import (
     task_run_logger,
 )
 from prefect.orion.schemas import core
-from prefect.orion.schemas.core import FlowRun, TaskRun
+from prefect.orion.schemas.core import FlowRun, TaskRun, TaskRunInput
 from prefect.orion.schemas.data import DataDocument
 from prefect.orion.schemas.filters import FlowRunFilter
 from prefect.orion.schemas.responses import SetStateStatus
@@ -759,12 +759,15 @@ async def begin_task_map(
     task_runner: Optional[BaseTaskRunner],
 ) -> List[Union[PrefectFuture, Awaitable[PrefectFuture]]]:
     """Async entrypoint for task mapping"""
+    # We need to resolve some futures to map over their data, collect the upstream
+    # links beforehand to retain relationship tracking
+    task_inputs = {
+        k: await collect_task_run_inputs(v, max_depth=0) for k, v in parameters.items()
+    }
 
-    wait_for = set() if wait_for is None else set(wait_for)
-
-    # Resolve any futures / states that are in the parameters as we need to
-    # validate the lengths of those values before proceeding.
-    parameters.update(await resolve_inputs_with_context(parameters))
+    # Resolve the top-level parameters in order to get mappable data of a known length
+    # Additional parameters will be resolved in each mapped child where their relati
+    parameters = await resolve_inputs(parameters, max_depth=1)
 
     iterable_parameters = {}
     static_parameters = {}
@@ -799,26 +802,23 @@ async def begin_task_map(
         call_parameters = {key: value[i] for key, value in iterable_parameters.items()}
         call_parameters.update({key: value for key, value in static_parameters.items()})
 
-        call_parameters, call_wait_for = await unwrap_parameters(call_parameters)
-
         task_runs.append(
             partial(
                 get_task_call_return_value,
                 task=task,
                 flow_run_context=flow_run_context,
                 parameters=call_parameters,
-                wait_for=wait_for.union(call_wait_for),
+                wait_for=wait_for,
                 return_type=return_type,
                 task_runner=task_runner,
+                extra_task_inputs=task_inputs,
             )
         )
 
     return await gather(*task_runs)
 
 
-async def collect_task_run_inputs(
-    expr: Any,
-) -> Set[Union[core.TaskRunResult, core.Parameter, core.Constant]]:
+async def collect_task_run_inputs(expr: Any, max_depth: int = -1) -> Set[TaskRunInput]:
     """
     This function recurses through an expression to generate a set of any discernable
     task run inputs it finds in the data structure. It produces a set of all inputs
@@ -850,6 +850,7 @@ async def collect_task_run_inputs(
         expr,
         visit_fn=add_futures_and_states_to_inputs,
         return_data=False,
+        max_depth=max_depth,
     )
 
     return inputs
@@ -887,13 +888,17 @@ async def get_task_call_return_value(
     wait_for: Optional[Iterable[PrefectFuture]],
     return_type: EngineReturnType,
     task_runner: Optional[BaseTaskRunner],
+    extra_task_inputs: Optional[Dict[str, Set[TaskRunInput]]] = None,
 ):
+    extra_task_inputs = extra_task_inputs or {}
+
     future = await create_task_run_future(
         task=task,
         flow_run_context=flow_run_context,
         parameters=parameters,
         wait_for=wait_for,
         task_runner=task_runner,
+        extra_task_inputs=extra_task_inputs,
     )
     if return_type == "future":
         return future
@@ -911,6 +916,7 @@ async def create_task_run_future(
     parameters: Dict[str, Any],
     wait_for: Optional[Iterable[PrefectFuture]],
     task_runner: Optional[BaseTaskRunner],
+    extra_task_inputs: Dict[str, Set[TaskRunInput]],
 ) -> PrefectFuture:
     # Default to the flow run's task runner
     task_runner = task_runner or flow_run_context.task_runner
@@ -939,6 +945,7 @@ async def create_task_run_future(
             parameters=parameters,
             wait_for=wait_for,
             task_runner=task_runner,
+            extra_task_inputs=extra_task_inputs,
         )
     )
 
@@ -961,6 +968,7 @@ async def create_task_run_then_submit(
     parameters: Dict[str, Any],
     wait_for: Optional[Iterable[PrefectFuture]],
     task_runner: BaseTaskRunner,
+    extra_task_inputs: Dict[str, Set[TaskRunInput]],
 ) -> None:
 
     task_run = await create_task_run(
@@ -970,6 +978,7 @@ async def create_task_run_then_submit(
         parameters=parameters,
         dynamic_key=task_run_dynamic_key,
         wait_for=wait_for,
+        extra_task_inputs=extra_task_inputs,
     )
 
     # Attach the task run to the future to support `get_state` operations
@@ -995,10 +1004,15 @@ async def create_task_run(
     parameters: Dict[str, Any],
     dynamic_key: str,
     wait_for: Optional[Iterable[PrefectFuture]],
+    extra_task_inputs: Dict[str, Set[TaskRunInput]],
 ) -> TaskRun:
     task_inputs = {k: await collect_task_run_inputs(v) for k, v in parameters.items()}
     if wait_for:
         task_inputs["wait_for"] = await collect_task_run_inputs(wait_for)
+
+    # Join extra task inputs
+    for k, extras in extra_task_inputs.items():
+        task_inputs[k] = task_inputs[k].union(extras)
 
     logger = get_run_logger(flow_run_context)
 
@@ -1379,7 +1393,7 @@ async def report_flow_run_crashes(flow_run: FlowRun, client: OrionClient):
 
 
 async def resolve_inputs(
-    parameters: Dict[str, Any], return_data: bool = True
+    parameters: Dict[str, Any], return_data: bool = True, max_depth: int = -1
 ) -> Dict[str, Any]:
     """
     Resolve any `Quote`, `PrefectFuture`, or `State` types nested in parameters into
@@ -1417,6 +1431,7 @@ async def resolve_inputs(
         parameters,
         visit_fn=resolve_input,
         return_data=return_data,
+        max_depth=max_depth,
     )
 
 

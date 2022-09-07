@@ -1,6 +1,7 @@
 import datetime
 import inspect
 import warnings
+from typing import Dict, List
 from unittest.mock import MagicMock
 from uuid import UUID
 
@@ -1958,7 +1959,7 @@ class TestTaskMap:
     def numbers():
         return [1, 2, 3]
 
-    async def get_dependency_ids(self, session, flow_run_id) -> dict[UUID, list[UUID]]:
+    async def get_dependency_ids(self, session, flow_run_id) -> Dict[UUID, List[UUID]]:
         graph = await models.flow_runs.read_task_run_dependencies(
             session=session, flow_run_id=flow_run_id
         )
@@ -1986,12 +1987,15 @@ class TestTaskMap:
 
         assert [a.result() for a in add_futures] == [1, 2, 3]
 
-        assert dependency_ids[numbers_future.state_details.task_run_id] == []
+        assert (
+            dependency_ids[numbers_future.state_details.task_run_id] == []
+        ), "The numbers task run should have no upstreams"
+
         assert all(
             dependency_ids[a.state_details.task_run_id]
             == [numbers_future.state_details.task_run_id]
             for a in add_futures
-        )
+        ), "Each mapped future should have numbers as its sole upstream"
 
     async def test_map_preserves_dependencies_between_futures_all_mapped_children_multiple(
         self, session
