@@ -109,7 +109,12 @@ class AsyncPostgresConfiguration(BaseDatabaseConfiguration):
             if connect_args:
                 kwargs["connect_args"] = connect_args
 
-            engine = create_async_engine(self.connection_url, echo=self.echo, **kwargs)
+            engine = create_async_engine(
+                self.connection_url,
+                echo=self.echo,
+                execution_options={"isolation_level": "AUTOCOMMIT"},
+                **kwargs,
+            )
 
             self.ENGINES[cache_key] = engine
             await self.schedule_engine_disposal(cache_key)
@@ -218,7 +223,12 @@ class AioSqliteConfiguration(BaseDatabaseConfiguration):
             if ":memory:" in self.connection_url:
                 kwargs.update(poolclass=sa.pool.SingletonThreadPool)
 
-            engine = create_async_engine(self.connection_url, echo=self.echo, **kwargs)
+            engine = create_async_engine(
+                self.connection_url,
+                echo=self.echo,
+                execution_options={"isolation_level": "AUTOCOMMIT"},
+                **kwargs,
+            )
             sa.event.listen(engine.sync_engine, "engine_connect", self.setup_sqlite)
 
             self.ENGINES[cache_key] = engine
