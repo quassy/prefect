@@ -2133,8 +2133,9 @@ class TestTaskMap:
             dependency_ids[e.state_details.task_run_id] == [] for e in echo_futures
         )
         assert all(
-            dependency_ids[a.state_details.task_run_id]
-            == [e.state_details.task_run_id for e in echo_futures]
+            set(dependency_ids[a.state_details.task_run_id])
+            == {e.state_details.task_run_id for e in echo_futures}
+            and len(dependency_ids[a.state_details.task_run_id]) == 2
             for a in add_futures
         )
 
