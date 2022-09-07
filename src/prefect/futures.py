@@ -365,3 +365,21 @@ def call_repr(__fn: Callable, *args: Any, **kwargs: Any) -> str:
         call_args = call_args[:100] + "..."
 
     return f"{name}({call_args})"
+
+
+class ResolvedFuture:
+    def __init__(self, value: Any, from_future: PrefectFuture):
+        self.value = value
+        self.from_future = from_future
+
+    def __repr__(self):
+        return f"ResolvedFuture({self.value}, from_future={self.from_future})"
+
+    def __iter__(self):
+        return iter(ResolvedFuture(x, from_future=self.from_future) for x in self.value)
+
+    def __len__(self):
+        return len(self.value)
+
+    def __getitem__(self, item):
+        return ResolvedFuture(self.value[item], from_future=self.from_future)

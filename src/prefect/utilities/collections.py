@@ -268,6 +268,8 @@ def visit_collection(
             default, recursion is unlimited.
     """
 
+    from prefect.futures import ResolvedFuture
+
     def visit_nested(expr):
         # Utility for a recursive call, preserving options and updating the depth.
         return visit_collection(
@@ -344,6 +346,11 @@ def visit_collection(
             result = model_instance
         else:
             result = None
+    elif isinstance(expr, ResolvedFuture):
+        result = ResolvedFuture(
+            value=visit_nested(expr.value), from_future=expr.from_future
+        )
+
     else:
         result = result if return_data else None
 

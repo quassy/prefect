@@ -16,10 +16,20 @@ Engine process overview
     See `orchestrate_flow_run`, `orchestrate_task_run`
 """
 import logging
-import sys
 from contextlib import AsyncExitStack, asynccontextmanager, nullcontext
 from functools import partial
-from typing import Any, Awaitable, Dict, Iterable, List, Optional, Set, TypeVar, Union
+from typing import (
+    Any,
+    Awaitable,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    TypeVar,
+    Union,
+)
 from uuid import UUID, uuid4
 
 import anyio
@@ -45,7 +55,7 @@ from prefect.exceptions import (
 )
 from prefect.filesystems import LocalFileSystem, WritableFileSystem
 from prefect.flows import Flow
-from prefect.futures import PrefectFuture, call_repr
+from prefect.futures import PrefectFuture, ResolvedFuture, call_repr
 from prefect.logging.configuration import setup_logging
 from prefect.logging.handlers import OrionHandler
 from prefect.logging.loggers import (
@@ -750,14 +760,11 @@ async def begin_task_map(
 ) -> List[Union[PrefectFuture, Awaitable[PrefectFuture]]]:
     """Async entrypoint for task mapping"""
 
-    # Preserve task dependencies to futures passed as parameters,
-    # as when they are resolved the relationship will be lost.
-    wait_for = [] if wait_for is None else wait_for
-    wait_for.extend([x for x in parameters.values() if isinstance(x, PrefectFuture)])
+    wait_for = set() if wait_for is None else set(wait_for)
 
     # Resolve any futures / states that are in the parameters as we need to
     # validate the lengths of those values before proceeding.
-    parameters.update(await resolve_inputs(parameters))
+    parameters.update(await resolve_inputs_with_context(parameters))
 
     iterable_parameters = {}
     static_parameters = {}
@@ -791,13 +798,16 @@ async def begin_task_map(
     for i in range(map_length):
         call_parameters = {key: value[i] for key, value in iterable_parameters.items()}
         call_parameters.update({key: value for key, value in static_parameters.items()})
+
+        call_parameters, call_wait_for = await unwrap_parameters(call_parameters)
+
         task_runs.append(
             partial(
                 get_task_call_return_value,
                 task=task,
                 flow_run_context=flow_run_context,
                 parameters=call_parameters,
-                wait_for=wait_for,
+                wait_for=wait_for.union(call_wait_for),
                 return_type=return_type,
                 task_runner=task_runner,
             )
@@ -843,6 +853,31 @@ async def collect_task_run_inputs(
     )
 
     return inputs
+
+
+async def unwrap_parameters(
+    expr: Any,
+) -> Tuple[Any, Set[PrefectFuture]]:
+    """
+    Unwraps any `ResolvedFuture` into raw values and builds set of upstream futures.
+    """
+
+    futures = set()
+
+    def unwrap(obj):
+        if isinstance(obj, ResolvedFuture):
+            futures.add(obj.from_future)
+            return obj.value
+        return obj
+
+    result = await run_sync_in_worker_thread(
+        visit_collection,
+        expr,
+        visit_fn=unwrap,
+        return_data=True,
+    )
+
+    return result, futures
 
 
 async def get_task_call_return_value(
@@ -1382,6 +1417,51 @@ async def resolve_inputs(
         parameters,
         visit_fn=resolve_input,
         return_data=return_data,
+    )
+
+
+async def resolve_inputs_with_context(parameters: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Resolve any `Quote`, `PrefectFuture`, or `State` types nested in parameters into
+    data.
+
+    This differs from `resolve_inputs` as it wraps results from `PrefectFuture` in
+    `ResolvedFuture` preserving the future.
+
+    Returns:
+        A copy of the parameters with resolved data
+
+    Raises:
+        UpstreamTaskError: If any of the upstream states are not `COMPLETED`
+    """
+
+    def resolve_input(expr):
+        if isinstance(expr, Quote):
+            return expr.unquote()
+
+        elif isinstance(expr, PrefectFuture):
+            state = run_async_from_worker_thread(expr._wait)
+            if not state.is_completed():
+                raise UpstreamTaskError(
+                    f"Upstream task run '{state.state_details.task_run_id}' did not reach a 'COMPLETED' state."
+                )
+
+            return ResolvedFuture(state.result(), expr)
+
+        elif isinstance(expr, State):
+            if not expr.is_completed():
+                raise UpstreamTaskError(
+                    f"Upstream task run '{expr.state_details.task_run_id}' did not reach a 'COMPLETED' state."
+                )
+            return expr.result()
+
+        return expr
+
+    return await run_sync_in_worker_thread(
+        visit_collection,
+        parameters,
+        visit_fn=resolve_input,
+        return_data=True,
     )
 
 
