@@ -8,6 +8,9 @@
 
 [build]
 base = ""
+# command attempts to use an environment variable secret, but if that fails
+# falls back on a standard build - this allows us to run deploy previews on untrusted forks
+# without passing environment secrets
 command = """
 pip install --upgrade pip \
 && pip install --upgrade --upgrade-strategy eager  -e ".[dev]" \
