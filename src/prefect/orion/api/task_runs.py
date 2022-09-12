@@ -12,6 +12,7 @@ from fastapi import Body, Depends, HTTPException, Path, Response, status
 import prefect.orion.api.dependencies as dependencies
 import prefect.orion.models as models
 import prefect.orion.schemas as schemas
+from prefect.exceptions import StateValidationError
 from prefect.orion.api.run_history import run_history
 from prefect.orion.database.dependencies import provide_database_interface
 from prefect.orion.database.interface import OrionDBInterface
@@ -182,7 +183,7 @@ async def set_task_run_state(
         False,
         description=(
             "If false, orchestration rules will be applied that may alter "
-            "or prevent the state transition. If True, orchestration rules are not applied."
+            "or prevent the state transition. If True, most orchestration rules are not applied."
         ),
     ),
     db: OrionDBInterface = Depends(provide_database_interface),
@@ -194,16 +195,28 @@ async def set_task_run_state(
     """Set a task run state, invoking any orchestration rules."""
 
     # create the state
-    async with db.session_context(begin_transaction=True) as session:
-        orchestration_result = await models.task_runs.set_task_run_state(
-            session=session,
-            task_run_id=task_run_id,
-            state=schemas.states.State.parse_obj(
-                state
-            ),  # convert to a full State object
-            force=force,
-            task_policy=task_policy,
-        )
+    try:
+        async with db.session_context(begin_transaction=True) as session:
+            orchestration_result = await models.task_runs.set_task_run_state(
+                session=session,
+                task_run_id=task_run_id,
+                state=schemas.states.State.parse_obj(
+                    state
+                ),  # convert to a full State object
+                force=force,
+                task_policy=task_policy,
+            )
+    except StateValidationError:
+        async with db.session_context(begin_transaction=True) as session:
+            orchestration_result = await models.task_runs.set_task_run_state(
+                session=session,
+                task_run_id=task_run_id,
+                state=schemas.states.State.parse_obj(
+                    state
+                ),  # convert to a full State object
+                force=force,
+                task_policy=task_policy,
+            )
 
     if orchestration_result.status == schemas.responses.SetStateStatus.WAIT:
         response.status_code = status.HTTP_200_OK
